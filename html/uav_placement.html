@@ -1,0 +1,375 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>uav_placement</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-03"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created for the Assignment: optimal_points</a></li><li><a href="#4">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#5">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#6">Getting the K-Means Centroids</a></li><li><a href="#7">Plotting the K-Means Centroids</a></li><li><a href="#8">Getting the optimal UAV locations.</a></li><li><a href="#9">Plotting the optimal UAV placement locations</a></li></ul></div><h2>Creating a new environment<a name="1"></a></h2><pre class="codeinput">clc;
+clear <span class="string">all</span>;
+close <span class="string">all</span>;
+</pre><h2>Functions Created: generate_data<a name="2"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that generates data from multiple two dimensional Gaussians.</span>
+
+<span class="keyword">function</span> [data] = generate_data(num_of_clusters, start_range_mean, <span class="keyword">...</span><span class="comment"> </span>
+    end_range_mean, start_range_var, end_range_var, data_points_per_cluster)
+
+    <span class="comment">% num_of_clusters: Number of clusters that data should be generating for</span>
+    <span class="comment">% start_range_mean: Starting of the range of the mean</span>
+    <span class="comment">% end_range_mean: Ending of the range of the mean</span>
+    <span class="comment">% start_range_var: Starting of the range of the var</span>
+    <span class="comment">% end_range_var: Ending of the range of the var</span>
+    <span class="comment">% data_points_per_cluster: Number of data points that are generated per</span>
+    <span class="comment">% cluster</span>
+
+    data = [];
+
+    <span class="keyword">for</span> i=1:num_of_clusters
+        
+        <span class="comment">% Generating the mean per cluster</span>
+        mu = start_range_mean + (end_range_mean - start_range_mean).* <span class="keyword">...</span>
+            rand(2,1);
+
+        <span class="comment">% Generating the variance per cluster</span>
+
+        <span class="comment">% Creates a PSD Matrix</span>
+        <span class="keyword">while</span> (true)
+          <span class="comment">% Such a scaling is done (from -1 to 1 as the rand function </span>
+          <span class="comment">% generates only from 0 to 1. Such a scaling is important as if </span>
+          <span class="comment">% the matrix only produces values from 0 to 1, the sigma matrix</span>
+          <span class="comment">% is always positively correlated. Hence the range from -1 to 1</span>
+          <span class="comment">% ensures that we get both positive and negatively correalted 2D</span>
+          <span class="comment">% Gaussian Distributions.</span>
+          A = -1 + 2.*rand(2, 2);
+          <span class="keyword">if</span> (rank(A) == 2);
+              <span class="comment">% Ensures that the matrix is full rank.</span>
+              <span class="keyword">break</span>; 
+          <span class="keyword">end</span>    
+        <span class="keyword">end</span>
+        sigma = A' * A; <span class="comment">% Makes sure that sigma is PSD.</span>
+        sigma = start_range_var + (end_range_var - start_range_var).*sigma;
+
+        <span class="comment">% Generating the Data  </span>
+        data_per_cluster = mvnrnd(mu, sigma, data_points_per_cluster);
+        data = [data; data_per_cluster];
+    <span class="keyword">end</span>
+
+</pre><h2>Functions Created for the Assignment: optimal_points<a name="3"></a></h2><pre class="language-matlab">
+<span class="comment">% Function that returns the points that the UAV should either stay or</span>
+<span class="comment">% travel to and fro</span>
+
+<span class="keyword">function</span> [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, <span class="keyword">...</span>
+    bw_bs, bw_uav, h_uav, capacity_thresh)
+
+    <span class="comment">% x_bs: x coordinate of base station</span>
+    <span class="comment">% y_bs: y coordinate of base station</span>
+    <span class="comment">% x_c: x coordinate of centroid</span>
+    <span class="comment">% y_c: y coordinate of centroid</span>
+    <span class="comment">% P_bs: Power of the base station</span>
+    <span class="comment">% P_uav: Power of the UAV</span>
+    <span class="comment">% bw_bs: Bandwidth of the base station</span>
+    <span class="comment">% bw_uav: Bandwidth of the UAV</span>
+    <span class="comment">% h_uav: Height of the uav;</span>
+    <span class="comment">% capacity_thresh: Threshold of the capacity required to transmit.</span>
+
+    <span class="comment">% Converting from a 2D plane to a single line</span>
+    d = abs(sqrt((x_c - x_bs)^2 + (y_c -  y_bs)^2));
+    theta = atan2((y_c - y_bs), (x_c - x_bs));
+
+    <span class="comment">% Defining the equations</span>
+    syms <span class="string">x</span>
+    capacity_bs = bw_bs*log(1 + P_bs/(x^2 + h_uav^2));
+    capacity_uav = bw_uav*log(1 + P_uav/((x-d)^2 + h_uav^2));
+    
+    <span class="comment">% Solving the equations. vpasolve is a numerical solver.</span>
+    intersection_bs_thresh = vpasolve(capacity_bs == capacity_thresh, x, <span class="keyword">...</span>
+        [0, d]);
+    intersection_uav_thresh = vpasolve(capacity_uav == capacity_thresh, x, <span class="keyword">...</span>
+        [0, d]);
+    intersection_both_capacities = vpasolve(capacity_uav == capacity_bs, x, <span class="keyword">...</span>
+        [0, d]);
+    val_intersection_both_capacities = subs(capacity_uav, intersection_both_capacities);
+  
+    <span class="keyword">if</span> (val_intersection_both_capacities &gt; capacity_thresh)
+        <span class="comment">% if the intersection of both the capacities is more than the</span>
+        <span class="comment">% threshold.</span>
+        x1 = x_bs + cos(theta) * intersection_both_capacities;
+        y1 = y_bs + sin(theta) * intersection_both_capacities;
+        points = [x1, y1; x1, y1];
+    <span class="keyword">elseif</span> (isempty(intersection_bs_thresh) || intersection_uav_thresh)
+        <span class="comment">% If the intersection is less than the threshold and there is no</span>
+        <span class="comment">% intersection between the threshold and the two curves. Basically</span>
+        <span class="comment">% this means that the power is not enough for establishing the</span>
+        <span class="comment">% optimal channel capacity.</span>
+        points = [x_bs, y_bs; x_bs, y_bs];
+    <span class="keyword">else</span>
+        x1 = x_bs + cos(theta) * intersection_bs_thresh;
+        y1 = y_bs + sin(theta) * intersection_bs_thresh;
+        x2 = x_bs + cos(theta) * intersection_uav_thresh;
+        y2 = y_bs + sin(theta) * intersection_uav_thresh;
+        points = [x1, y1; x2, y2];
+    <span class="keyword">end</span>
+
+</pre><h2>Generating the data from each of the 2D Gaussian Distributions.<a name="4"></a></h2><pre class="codeinput"><span class="comment">% Parameters that can be changed according to the experiments.</span>
+num_of_clusters = 40;
+start_range_mean = -10;
+end_range_mean = 10;
+start_range_var = 0;
+end_range_var =  5;
+data_points_per_cluster = 100;
+
+<span class="comment">% Calling the generate_data function.</span>
+data = generate_data(num_of_clusters, start_range_mean, end_range_mean, <span class="keyword">...</span>
+    start_range_var, end_range_var, data_points_per_cluster);
+</pre><h2>Plotting each of the Gaussian Dsitributions.<a name="5"></a></h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Gaussian Clusters'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+    [0 0 1 1]);
+<span class="keyword">for</span> i=1:num_of_clusters
+    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), <span class="string">'.'</span>);
+    hold <span class="string">on</span>;
+<span class="keyword">end</span>
+
+hold <span class="string">off</span>;
+title(<span class="string">'Gaussian Distributions'</span>);
+xlabel(<span class="string">'X Distance'</span>);
+ylabel(<span class="string">'Y Distance'</span>);
+</pre><img vspace="5" hspace="5" src="uav_placement_01.png" alt=""> <h2>Getting the K-Means Centroids<a name="6"></a></h2><pre class="codeinput">num_of_centroids = 40;
+[idx, centroids] = kmeans(data, num_of_centroids);
+</pre><h2>Plotting the K-Means Centroids<a name="7"></a></h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'K Means Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+    [0 0 1 1]);
+<span class="keyword">for</span> i=1:num_of_clusters
+    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), <span class="string">'.'</span>);
+    hold <span class="string">on</span>;
+<span class="keyword">end</span>
+
+p_centroids = plot(centroids(:,1), centroids(:,2), <span class="string">'kx'</span>, <span class="string">'MarkerSize'</span>, <span class="keyword">...</span>
+    15, <span class="string">'LineWidth'</span>, 3, <span class="string">'DisplayName'</span>,<span class="string">'Centroids'</span>);
+hold <span class="string">off</span>;
+
+legend([p_centroids], <span class="string">'Centroids'</span>);
+title(<span class="string">'K Means Centroids'</span>);
+xlabel(<span class="string">'X Distance'</span>);
+ylabel(<span class="string">'Y Distance'</span>);
+</pre><img vspace="5" hspace="5" src="uav_placement_02.png" alt=""> <h2>Getting the optimal UAV locations.<a name="8"></a></h2><pre class="codeinput"><span class="comment">% Two are required as we can have two optimal locations.</span>
+uav_1 = [];
+uav_2 = [];
+
+<span class="comment">% Parameters that can be changed according to the experiments.</span>
+x_bs = 0;
+y_bs = 0;
+P_bs = 50;
+P_uav = 10;
+bw_bs = 10;
+bw_uav  = 5;
+h_uav = 1;
+capacity_thresh = 1;
+
+<span class="keyword">for</span> i=1:num_of_centroids
+    points = optimal_points(x_bs, y_bs, centroids(i,1), centroids(i,2), <span class="keyword">...</span>
+        P_bs, P_uav, bw_bs, bw_uav, h_uav, capacity_thresh);
+    uav_1 = [uav_1; points(1, :)];
+    uav_2 = [uav_2; points(2, :)];
+<span class="keyword">end</span>
+</pre><h2>Plotting the optimal UAV placement locations<a name="9"></a></h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Optimal UAV Placement'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+    [0 0 1 1]);
+<span class="keyword">for</span> i=1:num_of_clusters
+    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), <span class="string">'.'</span>);
+    hold <span class="string">on</span>;
+<span class="keyword">end</span>
+
+p_centroid = plot(centroids(:,1), centroids(:,2), <span class="string">'kx'</span>, <span class="string">'MarkerSize'</span>, 10, <span class="keyword">...</span>
+    <span class="string">'LineWidth'</span>, 3, <span class="string">'DisplayName'</span>,<span class="string">'Centroids'</span>);
+hold <span class="string">on</span>;
+p_uav_1 = plot(uav_1(:,1), uav_1(:,2), <span class="string">'o'</span>, <span class="string">'MarkerSize'</span>, 12, <span class="string">'LineWidth'</span>, 3);
+hold <span class="string">on</span>;
+p_uav_2 = plot(uav_2(:,1), uav_2(:,2), <span class="string">'+'</span>, <span class="string">'MarkerSize'</span>, 10, <span class="string">'LineWidth'</span>, 3);
+hold <span class="string">on</span>;
+p_center = plot(0, 0, <span class="string">'r*'</span>, <span class="string">'MarkerSize'</span>, 15, <span class="string">'LineWidth'</span>, 3);
+hold <span class="string">off</span>;
+
+legend([p_centroid, p_uav_1, p_uav_2, p_center], <span class="string">'Centroids'</span>, <span class="string">'UAV 1'</span>, <span class="keyword">...</span>
+    <span class="string">'UAV 2'</span>, <span class="string">'Center'</span>);
+title(<span class="string">'Optimal UAV Placement'</span>);
+xlabel(<span class="string">'X Distance'</span>);
+ylabel(<span class="string">'Y Distance'</span>);
+</pre><img vspace="5" hspace="5" src="uav_placement_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Creating a new environment
+
+clc;
+clear all;
+close all;
+
+%% Functions Created: generate_data
+% <include>generate_data.m</include>
+
+%% Functions Created for the Assignment: optimal_points
+% <include>optimal_points.m</include>
+
+%% Generating the data from each of the 2D Gaussian Distributions.
+
+% Parameters that can be changed according to the experiments.
+num_of_clusters = 40;  
+start_range_mean = -10;
+end_range_mean = 10;
+start_range_var = 0;
+end_range_var =  5;
+data_points_per_cluster = 100;
+
+% Calling the generate_data function.
+data = generate_data(num_of_clusters, start_range_mean, end_range_mean, ...
+    start_range_var, end_range_var, data_points_per_cluster);
+
+%% Plotting each of the Gaussian Dsitributions.
+
+figure('Name', 'Gaussian Clusters', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+for i=1:num_of_clusters
+    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), '.');
+    hold on;
+end
+
+hold off;
+title('Gaussian Distributions');
+xlabel('X Distance');
+ylabel('Y Distance');
+
+%% Getting the K-Means Centroids
+
+num_of_centroids = 40;
+[idx, centroids] = kmeans(data, num_of_centroids);
+
+%% Plotting the K-Means Centroids
+
+figure('Name', 'K Means Centroids', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+for i=1:num_of_clusters
+    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), '.');
+    hold on;
+end
+
+p_centroids = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', ...
+    15, 'LineWidth', 3, 'DisplayName','Centroids'); 
+hold off;
+
+legend([p_centroids], 'Centroids');
+title('K Means Centroids');
+xlabel('X Distance');
+ylabel('Y Distance');
+
+%% Getting the optimal UAV locations.
+
+% Two are required as we can have two optimal locations. 
+uav_1 = [];
+uav_2 = [];
+
+% Parameters that can be changed according to the experiments.
+x_bs = 0; 
+y_bs = 0;
+P_bs = 50;
+P_uav = 10;
+bw_bs = 10;
+bw_uav  = 5;
+h_uav = 1;
+capacity_thresh = 1;
+
+for i=1:num_of_centroids
+    points = optimal_points(x_bs, y_bs, centroids(i,1), centroids(i,2), ...
+        P_bs, P_uav, bw_bs, bw_uav, h_uav, capacity_thresh);
+    uav_1 = [uav_1; points(1, :)];
+    uav_2 = [uav_2; points(2, :)];
+end
+
+%% Plotting the optimal UAV placement locations
+
+figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+for i=1:num_of_clusters
+    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), '.');
+    hold on;
+end
+
+p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
+    'LineWidth', 3, 'DisplayName','Centroids'); 
+hold on;
+p_uav_1 = plot(uav_1(:,1), uav_1(:,2), 'o', 'MarkerSize', 12, 'LineWidth', 3);
+hold on;
+p_uav_2 = plot(uav_2(:,1), uav_2(:,2), '+', 'MarkerSize', 10, 'LineWidth', 3);
+hold on;
+p_center = plot(0, 0, 'r*', 'MarkerSize', 15, 'LineWidth', 3);
+hold off;
+
+legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', 'UAV 1', ... 
+    'UAV 2', 'Center');
+title('Optimal UAV Placement');
+xlabel('X Distance');
+ylabel('Y Distance');
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>
