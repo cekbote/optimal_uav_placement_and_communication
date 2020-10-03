@@ -1,1 +1,1 @@
-# optimal_uav_placement_and_communication
+# Optimal UAV Placement and Communication
