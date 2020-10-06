@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>uav_placement</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-03"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
+      --><title>uav_placement</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-06"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,7 +66,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created for the Assignment: optimal_points</a></li><li><a href="#4">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#5">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#6">Getting the K-Means Centroids</a></li><li><a href="#7">Plotting the K-Means Centroids</a></li><li><a href="#8">Getting the optimal UAV locations.</a></li><li><a href="#9">Plotting the optimal UAV placement locations</a></li></ul></div><h2>Creating a new environment<a name="1"></a></h2><pre class="codeinput">clc;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created: optimal_points</a></li><li><a href="#4">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#5">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#6">Getting the K-Means Centroids</a></li><li><a href="#7">Plotting the K-Means Centroids</a></li><li><a href="#8">Getting the optimal UAV locations.</a></li><li><a href="#9">Plotting the optimal UAV placement locations</a></li></ul></div><h2>Creating a new environment<a name="1"></a></h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
 </pre><h2>Functions Created: generate_data<a name="2"></a></h2><pre class="language-matlab">
@@ -115,7 +115,7 @@ close <span class="string">all</span>;
         data = [data; data_per_cluster];
     <span class="keyword">end</span>
 
-</pre><h2>Functions Created for the Assignment: optimal_points<a name="3"></a></h2><pre class="language-matlab">
+</pre><h2>Functions Created: optimal_points<a name="3"></a></h2><pre class="language-matlab">
 <span class="comment">% Function that returns the points that the UAV should either stay or</span>
 <span class="comment">% travel to and fro</span>
 
@@ -247,8 +247,8 @@ hold <span class="string">on</span>;
 p_center = plot(0, 0, <span class="string">'r*'</span>, <span class="string">'MarkerSize'</span>, 15, <span class="string">'LineWidth'</span>, 3);
 hold <span class="string">off</span>;
 
-legend([p_centroid, p_uav_1, p_uav_2, p_center], <span class="string">'Centroids'</span>, <span class="string">'UAV 1'</span>, <span class="keyword">...</span>
-    <span class="string">'UAV 2'</span>, <span class="string">'Center'</span>);
+legend([p_centroid, p_uav_1, p_uav_2, p_center], <span class="string">'Centroids'</span>, <span class="keyword">...</span>
+    <span class="string">'UAV Intersection 1'</span>, <span class="string">'UAV Intersection 2'</span>, <span class="string">'Base Station'</span>);
 title(<span class="string">'Optimal UAV Placement'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
@@ -263,7 +263,7 @@ close all;
 %% Functions Created: generate_data
 % <include>generate_data.m</include>
 
-%% Functions Created for the Assignment: optimal_points
+%% Functions Created: optimal_points
 % <include>optimal_points.m</include>
 
 %% Generating the data from each of the 2D Gaussian Distributions.
@@ -359,8 +359,8 @@ hold on;
 p_center = plot(0, 0, 'r*', 'MarkerSize', 15, 'LineWidth', 3);
 hold off;
 
-legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', 'UAV 1', ... 
-    'UAV 2', 'Center');
+legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
+    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
