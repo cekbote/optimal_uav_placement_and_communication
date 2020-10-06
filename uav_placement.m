@@ -7,7 +7,7 @@ close all;
 %% Functions Created: generate_data
 % <include>generate_data.m</include>
 
-%% Functions Created for the Assignment: optimal_points
+%% Functions Created: optimal_points
 % <include>optimal_points.m</include>
 
 %% Generating the data from each of the 2D Gaussian Distributions.
@@ -103,8 +103,8 @@ hold on;
 p_center = plot(0, 0, 'r*', 'MarkerSize', 15, 'LineWidth', 3);
 hold off;
 
-legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', 'UAV 1', ... 
-    'UAV 2', 'Center');
+legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
+    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
