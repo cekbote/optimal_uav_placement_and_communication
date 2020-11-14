@@ -24,6 +24,9 @@ data_points_per_cluster = 100;
 data = generate_data(num_of_clusters, start_range_mean, end_range_mean, ...
     start_range_var, end_range_var, data_points_per_cluster);
 
+X = data(:, 1);
+Y = data(: ,2);
+
 %% Plotting each of the Gaussian Dsitributions.
 
 figure('Name', 'Gaussian Clusters', 'units','normalized','outerposition', ...
@@ -38,20 +41,24 @@ title('Gaussian Distributions');
 xlabel('X Distance');
 ylabel('Y Distance');
 
-%% Getting the K-Means Centroids
+%% Getting the K-Means Centroids and Clusters
 
 num_of_centroids = 40;
 [idx, centroids] = kmeans(data, num_of_centroids);
+
+% Getting the Clusters Associated with each centroid.
+k_means_clusters = cell(num_of_centroids, 1);
+for i = 1:num_of_centroids
+    k_means_clusters{i} = [X(idx==i),Y(idx==i)] ;
+end
 
 %% Plotting the K-Means Centroids
 
 figure('Name', 'K Means Centroids', 'units','normalized','outerposition', ...
     [0 0 1 1]);
-for i=1:num_of_clusters
-    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), '.');
-    hold on;
-end
 
+gscatter(X, Y, idx);
+hold on;
 p_centroids = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', ...
     15, 'LineWidth', 3, 'DisplayName','Centroids'); 
 hold off;
@@ -61,7 +68,7 @@ title('K Means Centroids');
 xlabel('X Distance');
 ylabel('Y Distance');
 
-%% Getting the optimal UAV locations.
+%% Getting the optimal UAV locations Using K-Means
 
 % Two are required as we can have two optimal locations. 
 uav_1 = [];
@@ -88,11 +95,9 @@ end
 
 figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ...
     [0 0 1 1]);
-for i=1:num_of_clusters
-    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), '.');
-    hold on;
-end
 
+gscatter(X, Y, idx);
+hold on;
 p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
     'LineWidth', 3, 'DisplayName','Centroids'); 
 hold on;
@@ -108,6 +113,7 @@ legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ...
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
+
 
 
 
