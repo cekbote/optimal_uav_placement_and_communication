@@ -2,7 +2,7 @@
 % travel to and fro
 
 function [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, ...
-    bw_bs, bw_uav, h_uav, capacity_thresh)
+    bw_bs, bw_uav, h_uav, h_bs, h_relay, capacity_thresh)
 
     % x_bs: x coordinate of base station
     % y_bs: y coordinate of base station
@@ -21,8 +21,8 @@ function [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, ...
 
     % Defining the equations
     syms x
-    capacity_bs = bw_bs*log(1 + P_bs/(x^2 + h_uav^2));
-    capacity_uav = bw_uav*log(1 + P_uav/((x-d)^2 + h_uav^2));
+    capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_relay-h_bs)^2));
+    capacity_uav = bw_uav*log(1 + P_uav/((x-d)^2 + (h_uav-h_relay)^2));
     
     % Solving the equations. vpasolve is a numerical solver.
     intersection_bs_thresh = vpasolve(capacity_bs == capacity_thresh, x, ...
@@ -39,12 +39,12 @@ function [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, ...
         x1 = x_bs + cos(theta) * intersection_both_capacities;
         y1 = y_bs + sin(theta) * intersection_both_capacities;
         points = [x1, y1; x1, y1];
-    elseif (isempty(intersection_bs_thresh) || intersection_uav_thresh)
-        % If the intersection is less than the threshold and there is no
-        % intersection between the threshold and the two curves. Basically
-        % this means that the power is not enough for establishing the
-        % optimal channel capacity.
-        points = [x_bs, y_bs; x_bs, y_bs];
+%     elseif (isempty(intersection_bs_thresh) || intersection_uav_thresh)
+%         % If the intersection is less than the threshold and there is no
+%         % intersection between the threshold and the two curves. Basically
+%         % this means that the power is not enough for establishing the
+%         % optimal channel capacity.
+%         points = [x_bs, y_bs; x_bs, y_bs];
     else
         x1 = x_bs + cos(theta) * intersection_bs_thresh;
         y1 = y_bs + sin(theta) * intersection_bs_thresh;

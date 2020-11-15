@@ -116,7 +116,7 @@ end
 figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ...
     [0 0 1 1]);
 
-% Finds the radius of the coverage of the base station.
+% Finds the 
 syms x
 capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
 eqn = capacity_bs == capacity_thresh;
@@ -145,8 +145,6 @@ legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ...
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
-
-%% Checking the 
 
 
 
