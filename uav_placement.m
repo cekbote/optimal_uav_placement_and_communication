@@ -195,26 +195,3 @@ end
 
 fprintf('Random Placement Total Channel Capacity: %f \n', total_random_channel_cap);
 fprintf('Optimal Placement Total Channel Capacity: %f', total_channel_cap_opt);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

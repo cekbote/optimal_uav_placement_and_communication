@@ -1,3 +1,6 @@
+% Function that gives the optimal Power, Height, Coverage Radius, Users
+% Served with the given thresholds. 
+
 function [pow, height, rad, users_served, total_users] = optimize_pow_height_cluster(k_means_cluster, ... 
     centroid, p_thresh, h_thresh, alpha, channel_cap_thresh, bw_uav)
     
@@ -18,6 +21,13 @@ function [pow, height, rad, users_served, total_users] = optimize_pow_height_clu
     % height: Minimum height required by the UAV to communicate.
     % rad: Radius of the cluster that can be served.
     % users_served: Number of users served.
+    
+    % Latex Equation:
+    % \textrm{min }(\alpha P + (1 - \alpha) * H) \\
+    % \textrm{subject to: } \\
+    % 0 <= P <= P_{Threshold} \\
+    % H >= H_{Threshold} \\
+    % BW*log (1 + \frac{P}{D^2 + H^2})
 
     
     % Defining the objective function
@@ -70,14 +80,3 @@ function [pow, height, rad, users_served, total_users] = optimize_pow_height_clu
             break;
         end
     end 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-    
