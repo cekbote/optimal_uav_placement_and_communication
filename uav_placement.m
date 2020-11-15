@@ -41,6 +41,7 @@ title('Gaussian Distributions');
 xlabel('X Distance');
 ylabel('Y Distance');
 
+
 %% Getting the K-Means Centroids and Clusters
 
 num_of_centroids = 40;
@@ -51,6 +52,30 @@ k_means_clusters = cell(num_of_centroids, 1);
 for i = 1:num_of_centroids
     k_means_clusters{i} = [X(idx==i),Y(idx==i)] ;
 end
+
+%% Generating Random Points for Placing the the Random UAVs
+
+start_range_random = start_range_mean - sqrt(end_range_var);
+end_range_random = end_range_mean + sqrt(end_range_var);
+X_random = start_range_random + (end_range_random - start_range_random) * ... 
+    rand(num_of_clusters, 1);
+Y_random = start_range_random + (end_range_random - start_range_random) * ...
+    rand(num_of_clusters, 1);
+random_centroids = [X_random, Y_random];
+
+figure('Name', 'Random Centroids', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+
+gscatter(X, Y, idx);
+hold on;
+p_centroids_random = plot(random_centroids(:,1), random_centroids(:,2), ...
+    'kx', 'MarkerSize', 15, 'LineWidth', 3, 'DisplayName','Random Centroids'); 
+hold off;
+
+legend([p_centroids_random], 'Random Centroids');
+title('Random Centroids');
+xlabel('X Distance');
+ylabel('Y Distance');
 
 %% Plotting the K-Means Centroids
 
@@ -111,7 +136,7 @@ for i=1:num_of_centroids
     uav_2 = [uav_2; points(2, :)];
 end
 
-%% Plotting the optimal UAV placement locations
+%% Plotting the optimal UAV Placement Locations
 
 figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ...
     [0 0 1 1]);
@@ -146,7 +171,37 @@ title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
 
-%% Checking the 
+
+%% Comparing the Utility of K-Means vs Random Placement.
+
+% Computing the Random Placement Capacity
+total_random_channel_cap = 0;
+for i=1:num_of_centroids
+    dist = (data(:,1) - random_centroids(i, 1)).^2 + (data(:,2) - ... 
+        random_centroids(i, 2)).^2;
+    total_random_channel_cap  = total_random_channel_cap + sum(bw_uav * log(1 + ... 
+        P_uav./(dist + optimal_data(i,2)^2)));
+    
+end
+
+% Computing the Total Channel Capacity.
+total_channel_cap_opt = 0;
+for i=1:num_of_centroids
+    dist = (data(:,1) - centroids(i, 1)).^2 + (data(:,2) - centroids(i, 2)).^2;
+    total_channel_cap_opt  = total_channel_cap_opt + sum(bw_uav * log(1 + ... 
+        optimal_data(i,1)./(dist + optimal_data(i,2)^2)));
+    
+end
+
+fprintf('Random Placement Total Channel Capacity: %f \n', total_random_channel_cap);
+fprintf('Optimal Placement Total Channel Capacity: %f', total_channel_cap_opt);
+
+
+
+
+
+
+
 
 
 
