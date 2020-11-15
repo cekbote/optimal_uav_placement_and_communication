@@ -6,8 +6,8 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>uav_placement</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-10-06"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+      --><title>uav_placement</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-15"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
 html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
@@ -23,7 +23,7 @@ a:visited { color:#004aa0; text-decoration:none; }
 
 p { padding:0px; margin:0px 0px 20px; }
 img { padding:0px; margin:0px 0px 20px; border:none; }
-p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
 
 ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
 ul li { padding:0px; margin:0px 0px 7px 0px; }
@@ -52,6 +52,7 @@ span.comment { color:#228B22 }
 span.string { color:#A020F0 }
 span.untermstring { color:#B20000 }
 span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
 
 .footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
 .footer p { margin:0px; }
@@ -66,10 +67,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created: optimal_points</a></li><li><a href="#4">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#5">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#6">Getting the K-Means Centroids</a></li><li><a href="#7">Plotting the K-Means Centroids</a></li><li><a href="#8">Getting the optimal UAV locations.</a></li><li><a href="#9">Plotting the optimal UAV placement locations</a></li></ul></div><h2>Creating a new environment<a name="1"></a></h2><pre class="codeinput">clc;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created: optimal_points</a></li><li><a href="#4">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#5">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#6">Getting the K-Means Centroids and Clusters</a></li><li><a href="#7">Generating Random Points for Placing the the Random UAVs</a></li><li><a href="#8">Plotting the K-Means Centroids</a></li><li><a href="#9">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</a></li><li><a href="#10">Getting the optimal UAV locations for the UAV Relays</a></li><li><a href="#11">Plotting the optimal UAV Placement Locations</a></li><li><a href="#12">Comparing the Utility of K-Means vs Random Placement.</a></li></ul></div><h2 id="1">Creating a new environment</h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
-</pre><h2>Functions Created: generate_data<a name="2"></a></h2><pre class="language-matlab">
+</pre><h2 id="2">Functions Created: generate_data</h2><pre class="language-matlab">
 <span class="comment">% Function that generates data from multiple two dimensional Gaussians.</span>
 
 <span class="keyword">function</span> [data] = generate_data(num_of_clusters, start_range_mean, <span class="keyword">...</span><span class="comment"> </span>
@@ -115,12 +116,12 @@ close <span class="string">all</span>;
         data = [data; data_per_cluster];
     <span class="keyword">end</span>
 
-</pre><h2>Functions Created: optimal_points<a name="3"></a></h2><pre class="language-matlab">
+</pre><h2 id="3">Functions Created: optimal_points</h2><pre class="language-matlab">
 <span class="comment">% Function that returns the points that the UAV should either stay or</span>
 <span class="comment">% travel to and fro</span>
 
 <span class="keyword">function</span> [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, <span class="keyword">...</span>
-    bw_bs, bw_uav, h_uav, capacity_thresh)
+    bw_bs, bw_uav, h_uav, h_bs, h_relay, capacity_thresh)
 
     <span class="comment">% x_bs: x coordinate of base station</span>
     <span class="comment">% y_bs: y coordinate of base station</span>
@@ -139,8 +140,8 @@ close <span class="string">all</span>;
 
     <span class="comment">% Defining the equations</span>
     syms <span class="string">x</span>
-    capacity_bs = bw_bs*log(1 + P_bs/(x^2 + h_uav^2));
-    capacity_uav = bw_uav*log(1 + P_uav/((x-d)^2 + h_uav^2));
+    capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_relay-h_bs)^2));
+    capacity_uav = bw_uav*log(1 + P_uav/((x-d)^2 + (h_uav-h_relay)^2));
     
     <span class="comment">% Solving the equations. vpasolve is a numerical solver.</span>
     intersection_bs_thresh = vpasolve(capacity_bs == capacity_thresh, x, <span class="keyword">...</span>
@@ -157,7 +158,7 @@ close <span class="string">all</span>;
         x1 = x_bs + cos(theta) * intersection_both_capacities;
         y1 = y_bs + sin(theta) * intersection_both_capacities;
         points = [x1, y1; x1, y1];
-    <span class="keyword">elseif</span> (isempty(intersection_bs_thresh) || intersection_uav_thresh)
+    <span class="keyword">elseif</span> (isempty(intersection_bs_thresh) || isempty(intersection_uav_thresh))
         <span class="comment">% If the intersection is less than the threshold and there is no</span>
         <span class="comment">% intersection between the threshold and the two curves. Basically</span>
         <span class="comment">% this means that the power is not enough for establishing the</span>
@@ -171,10 +172,10 @@ close <span class="string">all</span>;
         points = [x1, y1; x2, y2];
     <span class="keyword">end</span>
 
-</pre><h2>Generating the data from each of the 2D Gaussian Distributions.<a name="4"></a></h2><pre class="codeinput"><span class="comment">% Parameters that can be changed according to the experiments.</span>
+</pre><h2 id="4">Generating the data from each of the 2D Gaussian Distributions.</h2><pre class="codeinput"><span class="comment">% Parameters that can be changed according to the experiments.</span>
 num_of_clusters = 40;
-start_range_mean = -10;
-end_range_mean = 10;
+start_range_mean = -30;
+end_range_mean = 30;
 start_range_var = 0;
 end_range_var =  5;
 data_points_per_cluster = 100;
@@ -182,7 +183,10 @@ data_points_per_cluster = 100;
 <span class="comment">% Calling the generate_data function.</span>
 data = generate_data(num_of_clusters, start_range_mean, end_range_mean, <span class="keyword">...</span>
     start_range_var, end_range_var, data_points_per_cluster);
-</pre><h2>Plotting each of the Gaussian Dsitributions.<a name="5"></a></h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Gaussian Clusters'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+
+X = data(:, 1);
+Y = data(: ,2);
+</pre><h2 id="5">Plotting each of the Gaussian Dsitributions.</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Gaussian Clusters'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
     [0 0 1 1]);
 <span class="keyword">for</span> i=1:num_of_clusters
     plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), <span class="string">'.'</span>);
@@ -193,15 +197,40 @@ hold <span class="string">off</span>;
 title(<span class="string">'Gaussian Distributions'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_01.png" alt=""> <h2>Getting the K-Means Centroids<a name="6"></a></h2><pre class="codeinput">num_of_centroids = 40;
+</pre><img vspace="5" hspace="5" src="uav_placement_01.png" alt=""> <h2 id="6">Getting the K-Means Centroids and Clusters</h2><pre class="codeinput">num_of_centroids = 40;
 [idx, centroids] = kmeans(data, num_of_centroids);
-</pre><h2>Plotting the K-Means Centroids<a name="7"></a></h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'K Means Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
-    [0 0 1 1]);
-<span class="keyword">for</span> i=1:num_of_clusters
-    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), <span class="string">'.'</span>);
-    hold <span class="string">on</span>;
-<span class="keyword">end</span>
 
+<span class="comment">% Getting the Clusters Associated with each centroid.</span>
+k_means_clusters = cell(num_of_centroids, 1);
+<span class="keyword">for</span> i = 1:num_of_centroids
+    k_means_clusters{i} = [X(idx==i),Y(idx==i)] ;
+<span class="keyword">end</span>
+</pre><h2 id="7">Generating Random Points for Placing the the Random UAVs</h2><pre class="codeinput">start_range_random = start_range_mean - sqrt(end_range_var);
+end_range_random = end_range_mean + sqrt(end_range_var);
+X_random = start_range_random + (end_range_random - start_range_random) * <span class="keyword">...</span>
+    rand(num_of_clusters, 1);
+Y_random = start_range_random + (end_range_random - start_range_random) * <span class="keyword">...</span>
+    rand(num_of_clusters, 1);
+random_centroids = [X_random, Y_random];
+
+figure(<span class="string">'Name'</span>, <span class="string">'Random Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+    [0 0 1 1]);
+
+gscatter(X, Y, idx);
+hold <span class="string">on</span>;
+p_centroids_random = plot(random_centroids(:,1), random_centroids(:,2), <span class="keyword">...</span>
+    <span class="string">'kx'</span>, <span class="string">'MarkerSize'</span>, 15, <span class="string">'LineWidth'</span>, 3, <span class="string">'DisplayName'</span>,<span class="string">'Random Centroids'</span>);
+hold <span class="string">off</span>;
+
+legend([p_centroids_random], <span class="string">'Random Centroids'</span>);
+title(<span class="string">'Random Centroids'</span>);
+xlabel(<span class="string">'X Distance'</span>);
+ylabel(<span class="string">'Y Distance'</span>);
+</pre><img vspace="5" hspace="5" src="uav_placement_02.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_03.png" alt=""> <h2 id="8">Plotting the K-Means Centroids</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'K Means Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+    [0 0 1 1]);
+
+gscatter(X, Y, idx);
+hold <span class="string">on</span>;
 p_centroids = plot(centroids(:,1), centroids(:,2), <span class="string">'kx'</span>, <span class="string">'MarkerSize'</span>, <span class="keyword">...</span>
     15, <span class="string">'LineWidth'</span>, 3, <span class="string">'DisplayName'</span>,<span class="string">'Centroids'</span>);
 hold <span class="string">off</span>;
@@ -210,7 +239,426 @@ legend([p_centroids], <span class="string">'Centroids'</span>);
 title(<span class="string">'K Means Centroids'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_02.png" alt=""> <h2>Getting the optimal UAV locations.<a name="8"></a></h2><pre class="codeinput"><span class="comment">% Two are required as we can have two optimal locations.</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_04.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_05.png" alt=""> <h2 id="9">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</h2><pre class="codeinput"><span class="comment">% The five columns are optimal power, optimal height, radius of the users</span>
+<span class="comment">% served, number of users served</span>
+optimal_data = zeros(num_of_centroids, 5);
+power_threshold = 10;
+height_threshold = 0.5;
+bw_uav  = 5;
+alpha = 0.5;
+chan_capacity_thresh = 1;
+
+<span class="keyword">for</span> i=1:num_of_centroids
+    [optimal_data(i,1), optimal_data(i,2), optimal_data(i,3), <span class="keyword">...</span>
+        optimal_data(i,4), optimal_data(i,5)] = <span class="keyword">...</span>
+        optimize_pow_height_cluster(k_means_clusters{i}, centroids(i,:), <span class="keyword">...</span>
+        power_threshold, height_threshold, alpha, chan_capacity_thresh, bw_uav);
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+</pre><h2 id="10">Getting the optimal UAV locations for the UAV Relays</h2><pre class="codeinput"><span class="comment">% Two are required as we can have two optimal locations.</span>
 uav_1 = [];
 uav_2 = [];
 
@@ -221,22 +669,34 @@ P_bs = 50;
 P_uav = 10;
 bw_bs = 10;
 bw_uav  = 5;
-h_uav = 1;
+h_relay= 1;
+h_bs = 0.1;
 capacity_thresh = 1;
 
 <span class="keyword">for</span> i=1:num_of_centroids
     points = optimal_points(x_bs, y_bs, centroids(i,1), centroids(i,2), <span class="keyword">...</span>
-        P_bs, P_uav, bw_bs, bw_uav, h_uav, capacity_thresh);
+        P_bs, P_uav, bw_bs, bw_uav, optimal_data(i,2), h_bs, h_relay, <span class="keyword">...</span>
+        capacity_thresh);
     uav_1 = [uav_1; points(1, :)];
     uav_2 = [uav_2; points(2, :)];
 <span class="keyword">end</span>
-</pre><h2>Plotting the optimal UAV placement locations<a name="9"></a></h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Optimal UAV Placement'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+</pre><h2 id="11">Plotting the optimal UAV Placement Locations</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Optimal UAV Placement'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
     [0 0 1 1]);
-<span class="keyword">for</span> i=1:num_of_clusters
-    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), <span class="string">'.'</span>);
-    hold <span class="string">on</span>;
-<span class="keyword">end</span>
 
+<span class="comment">% Finds the radius of the coverage of the base station.</span>
+syms <span class="string">x</span>
+capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
+eqn = capacity_bs == capacity_thresh;
+r = solve(eqn, x);
+r = abs(r(1,1));
+th = 0:pi/50:2*pi;
+x_circle = r * cos(th);
+y_circle = r * sin(th);
+plot(x_circle, y_circle);
+hold <span class="string">on</span>;
+
+gscatter(X, Y, idx);
+hold <span class="string">on</span>;
 p_centroid = plot(centroids(:,1), centroids(:,2), <span class="string">'kx'</span>, <span class="string">'MarkerSize'</span>, 10, <span class="keyword">...</span>
     <span class="string">'LineWidth'</span>, 3, <span class="string">'DisplayName'</span>,<span class="string">'Centroids'</span>);
 hold <span class="string">on</span>;
@@ -252,7 +712,29 @@ legend([p_centroid, p_uav_1, p_uav_2, p_center], <span class="string">'Centroids
 title(<span class="string">'Optimal UAV Placement'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="uav_placement_06.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_07.png" alt=""> <h2 id="12">Comparing the Utility of K-Means vs Random Placement.</h2><pre class="codeinput"><span class="comment">% Computing the Random Placement Capacity</span>
+total_random_channel_cap = 0;
+<span class="keyword">for</span> i=1:num_of_centroids
+    dist = (data(:,1) - random_centroids(i, 1)).^2 + (data(:,2) - <span class="keyword">...</span>
+        random_centroids(i, 2)).^2;
+    total_random_channel_cap  = total_random_channel_cap + sum(bw_uav * log(1 + <span class="keyword">...</span>
+        P_uav./(dist + optimal_data(i,2)^2)));
+
+<span class="keyword">end</span>
+
+<span class="comment">% Computing the Total Channel Capacity.</span>
+total_channel_cap_opt = 0;
+<span class="keyword">for</span> i=1:num_of_centroids
+    dist = (data(:,1) - centroids(i, 1)).^2 + (data(:,2) - centroids(i, 2)).^2;
+    total_channel_cap_opt  = total_channel_cap_opt + sum(bw_uav * log(1 + <span class="keyword">...</span>
+        optimal_data(i,1)./(dist + optimal_data(i,2)^2)));
+
+<span class="keyword">end</span>
+
+fprintf(<span class="string">'Random Placement Total Channel Capacity: %f \n'</span>, total_random_channel_cap);
+fprintf(<span class="string">'Optimal Placement Total Channel Capacity: %f'</span>, total_channel_cap_opt);
+</pre><pre class="codeoutput">Random Placement Total Channel Capacity: 29435.820649 
+Optimal Placement Total Channel Capacity: 39004.643508</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Creating a new environment
 
@@ -270,8 +752,8 @@ close all;
 
 % Parameters that can be changed according to the experiments.
 num_of_clusters = 40;  
-start_range_mean = -10;
-end_range_mean = 10;
+start_range_mean = -30;
+end_range_mean = 30;
 start_range_var = 0;
 end_range_var =  5;
 data_points_per_cluster = 100;
@@ -279,6 +761,9 @@ data_points_per_cluster = 100;
 % Calling the generate_data function.
 data = generate_data(num_of_clusters, start_range_mean, end_range_mean, ...
     start_range_var, end_range_var, data_points_per_cluster);
+
+X = data(:, 1);
+Y = data(: ,2);
 
 %% Plotting each of the Gaussian Dsitributions.
 
@@ -294,20 +779,49 @@ title('Gaussian Distributions');
 xlabel('X Distance');
 ylabel('Y Distance');
 
-%% Getting the K-Means Centroids
+
+%% Getting the K-Means Centroids and Clusters
 
 num_of_centroids = 40;
 [idx, centroids] = kmeans(data, num_of_centroids);
+
+% Getting the Clusters Associated with each centroid.
+k_means_clusters = cell(num_of_centroids, 1);
+for i = 1:num_of_centroids
+    k_means_clusters{i} = [X(idx==i),Y(idx==i)] ;
+end
+
+%% Generating Random Points for Placing the the Random UAVs
+
+start_range_random = start_range_mean - sqrt(end_range_var);
+end_range_random = end_range_mean + sqrt(end_range_var);
+X_random = start_range_random + (end_range_random - start_range_random) * ... 
+    rand(num_of_clusters, 1);
+Y_random = start_range_random + (end_range_random - start_range_random) * ...
+    rand(num_of_clusters, 1);
+random_centroids = [X_random, Y_random];
+
+figure('Name', 'Random Centroids', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+
+gscatter(X, Y, idx);
+hold on;
+p_centroids_random = plot(random_centroids(:,1), random_centroids(:,2), ...
+    'kx', 'MarkerSize', 15, 'LineWidth', 3, 'DisplayName','Random Centroids'); 
+hold off;
+
+legend([p_centroids_random], 'Random Centroids');
+title('Random Centroids');
+xlabel('X Distance');
+ylabel('Y Distance');
 
 %% Plotting the K-Means Centroids
 
 figure('Name', 'K Means Centroids', 'units','normalized','outerposition', ...
     [0 0 1 1]);
-for i=1:num_of_clusters
-    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), '.');
-    hold on;
-end
 
+gscatter(X, Y, idx);
+hold on;
 p_centroids = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', ...
     15, 'LineWidth', 3, 'DisplayName','Centroids'); 
 hold off;
@@ -317,7 +831,25 @@ title('K Means Centroids');
 xlabel('X Distance');
 ylabel('Y Distance');
 
-%% Getting the optimal UAV locations.
+%% Getting the optimal UAV power, height, coverage area, and the users served per Cluster
+
+% The five columns are optimal power, optimal height, radius of the users
+% served, number of users served
+optimal_data = zeros(num_of_centroids, 5);
+power_threshold = 10;
+height_threshold = 0.5;
+bw_uav  = 5;
+alpha = 0.5;
+chan_capacity_thresh = 1;
+
+for i=1:num_of_centroids
+    [optimal_data(i,1), optimal_data(i,2), optimal_data(i,3), ...
+        optimal_data(i,4), optimal_data(i,5)] = ...
+        optimize_pow_height_cluster(k_means_clusters{i}, centroids(i,:), ...
+        power_threshold, height_threshold, alpha, chan_capacity_thresh, bw_uav);
+end
+
+%% Getting the optimal UAV locations for the UAV Relays
 
 % Two are required as we can have two optimal locations. 
 uav_1 = [];
@@ -330,25 +862,37 @@ P_bs = 50;
 P_uav = 10;
 bw_bs = 10;
 bw_uav  = 5;
-h_uav = 1;
+h_relay= 1;
+h_bs = 0.1;
 capacity_thresh = 1;
 
 for i=1:num_of_centroids
     points = optimal_points(x_bs, y_bs, centroids(i,1), centroids(i,2), ...
-        P_bs, P_uav, bw_bs, bw_uav, h_uav, capacity_thresh);
+        P_bs, P_uav, bw_bs, bw_uav, optimal_data(i,2), h_bs, h_relay, ...
+        capacity_thresh);
     uav_1 = [uav_1; points(1, :)];
     uav_2 = [uav_2; points(2, :)];
 end
 
-%% Plotting the optimal UAV placement locations
+%% Plotting the optimal UAV Placement Locations
 
 figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ...
     [0 0 1 1]);
-for i=1:num_of_clusters
-    plot(data((i-1)*100 + 1: (i)*100, 1), data((i-1)*100 + 1: (i)*100, 2), '.');
-    hold on;
-end
 
+% Finds the radius of the coverage of the base station.
+syms x
+capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
+eqn = capacity_bs == capacity_thresh;
+r = solve(eqn, x);
+r = abs(r(1,1));
+th = 0:pi/50:2*pi;
+x_circle = r * cos(th);
+y_circle = r * sin(th);
+plot(x_circle, y_circle);
+hold on;
+
+gscatter(X, Y, idx);
+hold on;
 p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
     'LineWidth', 3, 'DisplayName','Centroids'); 
 hold on;
@@ -364,6 +908,48 @@ legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ...
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
+
+
+%% Comparing the Utility of K-Means vs Random Placement.
+
+% Computing the Random Placement Capacity
+total_random_channel_cap = 0;
+for i=1:num_of_centroids
+    dist = (data(:,1) - random_centroids(i, 1)).^2 + (data(:,2) - ... 
+        random_centroids(i, 2)).^2;
+    total_random_channel_cap  = total_random_channel_cap + sum(bw_uav * log(1 + ... 
+        P_uav./(dist + optimal_data(i,2)^2)));
+    
+end
+
+% Computing the Total Channel Capacity.
+total_channel_cap_opt = 0;
+for i=1:num_of_centroids
+    dist = (data(:,1) - centroids(i, 1)).^2 + (data(:,2) - centroids(i, 2)).^2;
+    total_channel_cap_opt  = total_channel_cap_opt + sum(bw_uav * log(1 + ... 
+        optimal_data(i,1)./(dist + optimal_data(i,2)^2)));
+    
+end
+
+fprintf('Random Placement Total Channel Capacity: %f \n', total_random_channel_cap);
+fprintf('Optimal Placement Total Channel Capacity: %f', total_channel_cap_opt);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
