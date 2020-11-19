@@ -14,11 +14,12 @@ close all;
 
 % Parameters that can be changed according to the experiments.
 num_of_clusters = 40;  
-start_range_mean = -30;
-end_range_mean = 30;
+start_range_mean = -50;
+end_range_mean = 50;
 start_range_var = 0;
-end_range_var =  5;
+end_range_var =  10;
 data_points_per_cluster = 100;
+no_of_users = num_of_clusters * data_points_per_cluster;
 
 % Calling the generate_data function.
 data = generate_data(num_of_clusters, start_range_mean, end_range_mean, ...
@@ -172,26 +173,48 @@ xlabel('X Distance');
 ylabel('Y Distance');
 
 
-%% Comparing the Utility of K-Means vs Random Placement.
+%% Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.
 
 % Computing the Random Placement Capacity
 total_random_channel_cap = 0;
+total_random_users_served = 0;
 for i=1:num_of_centroids
     dist = (data(:,1) - random_centroids(i, 1)).^2 + (data(:,2) - ... 
         random_centroids(i, 2)).^2;
     total_random_channel_cap  = total_random_channel_cap + sum(bw_uav * log(1 + ... 
         P_uav./(dist + optimal_data(i,2)^2)));
+    total_random_users_served = total_random_users_served + sum(bw_uav * log(1 + ...
+        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh);
     
 end
 
 % Computing the Total Channel Capacity.
 total_channel_cap_opt = 0;
+total_optimal_users_served = 0;
 for i=1:num_of_centroids
     dist = (data(:,1) - centroids(i, 1)).^2 + (data(:,2) - centroids(i, 2)).^2;
     total_channel_cap_opt  = total_channel_cap_opt + sum(bw_uav * log(1 + ... 
         optimal_data(i,1)./(dist + optimal_data(i,2)^2)));
+    total_optimal_users_served = total_optimal_users_served + sum(bw_uav * log(1 + ...
+        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh);
     
 end
 
-fprintf('Random Placement Total Channel Capacity: %f \n', total_random_channel_cap);
-fprintf('Optimal Placement Total Channel Capacity: %f', total_channel_cap_opt);
+fprintf('Random Placement\n');
+fprintf('Total Channel Capacity: %f \n', total_random_channel_cap);
+fprintf('Channel Capacity Per User: %f \n', total_random_channel_cap/no_of_users);
+fprintf('Users Served: %f \n', total_random_users_served);
+perc_random_users_served = (total_random_users_served / no_of_users) * 100 ...
+    * (total_random_users_served<no_of_users) + 100*~(total_random_users_served<no_of_users);
+fprintf('Percentage of Users Served: %f \n\n', perc_random_users_served);
+
+fprintf('Optimal Placement\n');
+fprintf('Total Channel Capacity: %f \n', total_channel_cap_opt);
+fprintf('Channel Capacity Per User: %f \n', total_channel_cap_opt/no_of_users);
+fprintf('Users Served: %f \n', total_optimal_users_served);
+perc_opt_users_served = (total_optimal_users_served / no_of_users) * 100 ...
+    * (total_optimal_users_served<no_of_users) + 100*~(total_optimal_users_served<no_of_users);
+fprintf('Percentage of Users Served: %f% \n\n', perc_opt_users_served);
+
+
+
