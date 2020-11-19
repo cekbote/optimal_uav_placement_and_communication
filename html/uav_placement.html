@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>uav_placement</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-15"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
+      --><title>uav_placement</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2020-11-19"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created: optimal_points</a></li><li><a href="#4">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#5">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#6">Getting the K-Means Centroids and Clusters</a></li><li><a href="#7">Generating Random Points for Placing the the Random UAVs</a></li><li><a href="#8">Plotting the K-Means Centroids</a></li><li><a href="#9">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</a></li><li><a href="#10">Getting the optimal UAV locations for the UAV Relays</a></li><li><a href="#11">Plotting the optimal UAV Placement Locations</a></li><li><a href="#12">Comparing the Utility of K-Means vs Random Placement.</a></li></ul></div><h2 id="1">Creating a new environment</h2><pre class="codeinput">clc;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created: optimal_points</a></li><li><a href="#4">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#5">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#6">Getting the K-Means Centroids and Clusters</a></li><li><a href="#7">Generating Random Points for Placing the the Random UAVs</a></li><li><a href="#8">Plotting the K-Means Centroids</a></li><li><a href="#9">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</a></li><li><a href="#10">Getting the optimal UAV locations for the UAV Relays</a></li><li><a href="#11">Plotting the optimal UAV Placement Locations</a></li><li><a href="#12">Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.</a></li></ul></div><h2 id="1">Creating a new environment</h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
 </pre><h2 id="2">Functions Created: generate_data</h2><pre class="language-matlab">
@@ -174,11 +174,12 @@ close <span class="string">all</span>;
 
 </pre><h2 id="4">Generating the data from each of the 2D Gaussian Distributions.</h2><pre class="codeinput"><span class="comment">% Parameters that can be changed according to the experiments.</span>
 num_of_clusters = 40;
-start_range_mean = -30;
-end_range_mean = 30;
+start_range_mean = -40;
+end_range_mean = 40;
 start_range_var = 0;
-end_range_var =  5;
+end_range_var =  10;
 data_points_per_cluster = 100;
+no_of_users = num_of_clusters * data_points_per_cluster;
 
 <span class="comment">% Calling the generate_data function.</span>
 data = generate_data(num_of_clusters, start_range_mean, end_range_mean, <span class="keyword">...</span>
@@ -226,7 +227,7 @@ legend([p_centroids_random], <span class="string">'Random Centroids'</span>);
 title(<span class="string">'Random Centroids'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_02.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_03.png" alt=""> <h2 id="8">Plotting the K-Means Centroids</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'K Means Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_02.png" alt=""> <h2 id="8">Plotting the K-Means Centroids</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'K Means Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
     [0 0 1 1]);
 
 gscatter(X, Y, idx);
@@ -239,7 +240,7 @@ legend([p_centroids], <span class="string">'Centroids'</span>);
 title(<span class="string">'K Means Centroids'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_04.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_05.png" alt=""> <h2 id="9">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</h2><pre class="codeinput"><span class="comment">% The five columns are optimal power, optimal height, radius of the users</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_03.png" alt=""> <h2 id="9">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</h2><pre class="codeinput"><span class="comment">% The five columns are optimal power, optimal height, radius of the users</span>
 <span class="comment">% served, number of users served</span>
 optimal_data = zeros(num_of_centroids, 5);
 power_threshold = 10;
@@ -257,11 +258,703 @@ chan_capacity_thresh = 1;
 </pre><pre class="codeoutput">
 Solving problem using fmincon.
 
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
 Local minimum found that satisfies the constraints.
 
 Optimization completed because the objective function is non-decreasing in 
 feasible directions, to within the value of the optimality tolerance,
 and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
 
 
 Solving problem using fmincon.
@@ -302,6 +995,323 @@ satisfied to within the value of the constraint tolerance.
 
 Solving problem using fmincon.
 
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
 Converged to an infeasible point.
 
 fmincon stopped because the size of the current step is less than
@@ -338,173 +1348,18 @@ and constraints are satisfied to within the value of the constraint tolerance.
 
 Solving problem using fmincon.
 
-Local minimum found that satisfies the constraints.
+Converged to an infeasible point.
 
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
 
 
 Solving problem using fmincon.
 
-Local minimum found that satisfies the constraints.
+Converged to an infeasible point.
 
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
 
 
 Solving problem using fmincon.
@@ -568,96 +1423,6 @@ Optimization completed because the objective function is non-decreasing in
 feasible directions, to within the value of the optimality tolerance,
 and constraints are satisfied to within the value of the constraint tolerance.
 
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
 </pre><h2 id="10">Getting the optimal UAV locations for the UAV Relays</h2><pre class="codeinput"><span class="comment">% Two are required as we can have two optimal locations.</span>
 uav_1 = [];
 uav_2 = [];
@@ -666,7 +1431,7 @@ uav_2 = [];
 x_bs = 0;
 y_bs = 0;
 P_bs = 50;
-P_uav = 10;
+P_uav = power_threshold;
 bw_bs = 10;
 bw_uav  = 5;
 h_relay= 1;
@@ -712,29 +1477,66 @@ legend([p_centroid, p_uav_1, p_uav_2, p_center], <span class="string">'Centroids
 title(<span class="string">'Optimal UAV Placement'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_06.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_07.png" alt=""> <h2 id="12">Comparing the Utility of K-Means vs Random Placement.</h2><pre class="codeinput"><span class="comment">% Computing the Random Placement Capacity</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_04.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_05.png" alt=""> <h2 id="12">Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.</h2><pre class="codeinput"><span class="comment">% Computing the Random Placement Capacity</span>
 total_random_channel_cap = 0;
+total_random_users_served = 0;
 <span class="keyword">for</span> i=1:num_of_centroids
     dist = (data(:,1) - random_centroids(i, 1)).^2 + (data(:,2) - <span class="keyword">...</span>
         random_centroids(i, 2)).^2;
     total_random_channel_cap  = total_random_channel_cap + sum(bw_uav * log(1 + <span class="keyword">...</span>
         P_uav./(dist + optimal_data(i,2)^2)));
+    total_random_users_served = total_random_users_served + sum(bw_uav * log(1 + <span class="keyword">...</span>
+        P_uav./(dist + optimal_data(i,2)^2))&gt;chan_capacity_thresh);
 
 <span class="keyword">end</span>
 
 <span class="comment">% Computing the Total Channel Capacity.</span>
 total_channel_cap_opt = 0;
+total_optimal_users_served = 0;
 <span class="keyword">for</span> i=1:num_of_centroids
     dist = (data(:,1) - centroids(i, 1)).^2 + (data(:,2) - centroids(i, 2)).^2;
     total_channel_cap_opt  = total_channel_cap_opt + sum(bw_uav * log(1 + <span class="keyword">...</span>
         optimal_data(i,1)./(dist + optimal_data(i,2)^2)));
+    total_optimal_users_served = total_optimal_users_served + sum(bw_uav * log(1 + <span class="keyword">...</span>
+        P_uav./(dist + optimal_data(i,2)^2))&gt;chan_capacity_thresh);
 
 <span class="keyword">end</span>
 
-fprintf(<span class="string">'Random Placement Total Channel Capacity: %f \n'</span>, total_random_channel_cap);
-fprintf(<span class="string">'Optimal Placement Total Channel Capacity: %f'</span>, total_channel_cap_opt);
-</pre><pre class="codeoutput">Random Placement Total Channel Capacity: 29435.820649 
-Optimal Placement Total Channel Capacity: 39004.643508</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+fprintf(<span class="string">'Random Placement\n'</span>);
+fprintf(<span class="string">'Total Channel Capacity: %f \n'</span>, total_random_channel_cap);
+fprintf(<span class="string">'Channel Capacity Per User: %f \n'</span>, total_random_channel_cap/no_of_users);
+fprintf(<span class="string">'Users Served: %f \n'</span>, total_random_users_served);
+perc_random_users_served = (total_random_users_served / no_of_users) * 100 <span class="keyword">...</span>
+    * (total_random_users_served&lt;no_of_users) + 100*~(total_random_users_served&lt;no_of_users);
+fprintf(<span class="string">'Percentage of Users Served: %f \n\n'</span>, perc_random_users_served);
+
+fprintf(<span class="string">'Optimal Placement\n'</span>);
+fprintf(<span class="string">'Total Channel Capacity: %f \n'</span>, total_channel_cap_opt);
+fprintf(<span class="string">'Channel Capacity Per User: %f \n'</span>, total_channel_cap_opt/no_of_users);
+fprintf(<span class="string">'Users Served: %f \n'</span>, sum(optimal_data(:, 4)));
+perc_opt_users_served = (sum(optimal_data(:, 4)) / no_of_users) * 100;
+fprintf(<span class="string">'Percentage of Users Served: %f \n\n'</span>, perc_opt_users_served);
+
+fprintf(<span class="string">'Amount of Energy Saved: %f \n'</span>, <span class="keyword">...</span>
+    sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)));
+fprintf(<span class="string">'Percentage of Energy Saved: %f \n'</span>, <span class="keyword">...</span>
+    sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)) / <span class="keyword">...</span>
+    (no_of_users * power_threshold) * 100)
+</pre><pre class="codeoutput">Random Placement
+Total Channel Capacity: 19083.514248 
+Channel Capacity Per User: 4.770879 
+Users Served: 2911.000000 
+Percentage of Users Served: 72.775000 
+
+Optimal Placement
+Total Channel Capacity: 32729.468269 
+Channel Capacity Per User: 8.182367 
+Users Served: 3904.000000 
+Percentage of Users Served: 97.600000 
+
+Amount of Energy Saved: 7561.480469 
+Percentage of Energy Saved: 18.903701 
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Creating a new environment
 
@@ -752,11 +1554,12 @@ close all;
 
 % Parameters that can be changed according to the experiments.
 num_of_clusters = 40;  
-start_range_mean = -30;
-end_range_mean = 30;
+start_range_mean = -40;
+end_range_mean = 40;
 start_range_var = 0;
-end_range_var =  5;
+end_range_var =  10;
 data_points_per_cluster = 100;
+no_of_users = num_of_clusters * data_points_per_cluster;
 
 % Calling the generate_data function.
 data = generate_data(num_of_clusters, start_range_mean, end_range_mean, ...
@@ -859,7 +1662,7 @@ uav_2 = [];
 x_bs = 0; 
 y_bs = 0;
 P_bs = 50;
-P_uav = 10;
+P_uav = power_threshold;
 bw_bs = 10;
 bw_uav  = 5;
 h_relay= 1;
@@ -910,47 +1713,53 @@ xlabel('X Distance');
 ylabel('Y Distance');
 
 
-%% Comparing the Utility of K-Means vs Random Placement.
+%% Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.
 
 % Computing the Random Placement Capacity
 total_random_channel_cap = 0;
+total_random_users_served = 0;
 for i=1:num_of_centroids
     dist = (data(:,1) - random_centroids(i, 1)).^2 + (data(:,2) - ... 
         random_centroids(i, 2)).^2;
     total_random_channel_cap  = total_random_channel_cap + sum(bw_uav * log(1 + ... 
         P_uav./(dist + optimal_data(i,2)^2)));
+    total_random_users_served = total_random_users_served + sum(bw_uav * log(1 + ...
+        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh);
     
 end
 
 % Computing the Total Channel Capacity.
 total_channel_cap_opt = 0;
+total_optimal_users_served = 0;
 for i=1:num_of_centroids
     dist = (data(:,1) - centroids(i, 1)).^2 + (data(:,2) - centroids(i, 2)).^2;
     total_channel_cap_opt  = total_channel_cap_opt + sum(bw_uav * log(1 + ... 
         optimal_data(i,1)./(dist + optimal_data(i,2)^2)));
+    total_optimal_users_served = total_optimal_users_served + sum(bw_uav * log(1 + ...
+        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh);
     
 end
 
-fprintf('Random Placement Total Channel Capacity: %f \n', total_random_channel_cap);
-fprintf('Optimal Placement Total Channel Capacity: %f', total_channel_cap_opt);
+fprintf('Random Placement\n');
+fprintf('Total Channel Capacity: %f \n', total_random_channel_cap);
+fprintf('Channel Capacity Per User: %f \n', total_random_channel_cap/no_of_users);
+fprintf('Users Served: %f \n', total_random_users_served);
+perc_random_users_served = (total_random_users_served / no_of_users) * 100 ...
+    * (total_random_users_served<no_of_users) + 100*~(total_random_users_served<no_of_users);
+fprintf('Percentage of Users Served: %f \n\n', perc_random_users_served);
 
+fprintf('Optimal Placement\n');
+fprintf('Total Channel Capacity: %f \n', total_channel_cap_opt);
+fprintf('Channel Capacity Per User: %f \n', total_channel_cap_opt/no_of_users);
+fprintf('Users Served: %f \n', sum(optimal_data(:, 4)));
+perc_opt_users_served = (sum(optimal_data(:, 4)) / no_of_users) * 100;
+fprintf('Percentage of Users Served: %f \n\n', perc_opt_users_served);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+fprintf('Amount of Energy Saved: %f \n', ... 
+    sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)));
+fprintf('Percentage of Energy Saved: %f \n', ...
+    sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)) / ...
+    (no_of_users * power_threshold) * 100)
 
 
 

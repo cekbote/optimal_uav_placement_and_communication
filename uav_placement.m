@@ -14,8 +14,8 @@ close all;
 
 % Parameters that can be changed according to the experiments.
 num_of_clusters = 40;  
-start_range_mean = -50;
-end_range_mean = 50;
+start_range_mean = -40;
+end_range_mean = 40;
 start_range_var = 0;
 end_range_var =  10;
 data_points_per_cluster = 100;
@@ -122,7 +122,7 @@ uav_2 = [];
 x_bs = 0; 
 y_bs = 0;
 P_bs = 50;
-P_uav = 10;
+P_uav = power_threshold;
 bw_bs = 10;
 bw_uav  = 5;
 h_relay= 1;
@@ -211,10 +211,17 @@ fprintf('Percentage of Users Served: %f \n\n', perc_random_users_served);
 fprintf('Optimal Placement\n');
 fprintf('Total Channel Capacity: %f \n', total_channel_cap_opt);
 fprintf('Channel Capacity Per User: %f \n', total_channel_cap_opt/no_of_users);
-fprintf('Users Served: %f \n', total_optimal_users_served);
-perc_opt_users_served = (total_optimal_users_served / no_of_users) * 100 ...
-    * (total_optimal_users_served<no_of_users) + 100*~(total_optimal_users_served<no_of_users);
-fprintf('Percentage of Users Served: %f% \n\n', perc_opt_users_served);
+fprintf('Users Served: %f \n', sum(optimal_data(:, 4)));
+perc_opt_users_served = (sum(optimal_data(:, 4)) / no_of_users) * 100;
+fprintf('Percentage of Users Served: %f \n\n', perc_opt_users_served);
+
+fprintf('Amount of Energy Saved: %f \n', ... 
+    sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)));
+fprintf('Percentage of Energy Saved: %f \n', ...
+    sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)) / ...
+    (no_of_users * power_threshold) * 100)
+
+
 
 
 
