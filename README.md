@@ -11,3 +11,7 @@ This repo contains the code for the project Optimal UAV Placement and Communicat
 ## MATLAB Documentation for Optimization
 - [Solving Optimization Problems or Equations (solve)](https://in.mathworks.com/help/optim/ug/optim.problemdef.optimizationproblem.solve.html)
 - [Checking if a solution satisfies constraints (infeasibility)](https://in.mathworks.com/help/optim/ug/optim.problemdef.optimizationconstraint.infeasibility.html)
+
+## Results of the Experiments
+- The [Google Sheet](https://docs.google.com/spreadsheets/d/1yOZQIDsm5ox8qCE6SoBkB_squkEjh6qKpi4tMPmvztI/edit?usp=sharing) 
+contains the graphs as well as values for the experiments run. 
