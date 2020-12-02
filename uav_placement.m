@@ -119,8 +119,8 @@ uav_1 = [];
 uav_2 = [];
 
 % Parameters that can be changed according to the experiments.
-x_bs = 0; 
-y_bs = 0;
+x_bs = mean(centroids(:, 1));
+y_bs = mean(centroids(:, 2));
 P_bs = 50;
 P_uav = power_threshold;
 bw_bs = 10;
@@ -137,41 +137,97 @@ for i=1:num_of_centroids
     uav_2 = [uav_2; points(2, :)];
 end
 
-%% Plotting the optimal UAV Placement Locations
+%% Plotting the Ranges of all the UAVs
 
-figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ...
+c_data = [128, 152, 237]/256;
+c_bs_range = [244, 91, 105]/256;
+c_uav_1 = [92, 91, 110] / 256;
+c_uav_2 = [128, 194, 103] / 256;
+
+figure('Name', 'Communication Ranges', 'units','normalized','outerposition', ...
     [0 0 1 1]);
 
-% Finds the radius of the coverage of the base station.
+% Finds the radius of coverage of the UAVs and plots them
+syms d_uav;
+capacity_uav = bw_uav*log(1 + P_uav/(d_uav^2 + (height_threshold)^2));
+eqn = capacity_uav == capacity_thresh;
+r = solve(eqn, d_uav);
+r = abs(r(1,1));
+th = 0:pi/50:2*pi;
+for i=1:num_of_centroids
+    x_circle_uav = centroids(i, 1) + r * cos(th);
+    y_circle_uav = centroids(i, 2) + r * sin(th);
+    plot(x_circle_uav, y_circle_uav, 'Color', c_bs_range);
+    hold on;
+end
+
+% Finds the radius of the coverage of the base station and plots them.
 syms x
 capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
 eqn = capacity_bs == capacity_thresh;
 r = solve(eqn, x);
 r = abs(r(1,1));
 th = 0:pi/50:2*pi;
-x_circle = r * cos(th);
-y_circle = r * sin(th);
-plot(x_circle, y_circle);
+x_circle = x_bs + r * cos(th);
+y_circle = y_bs + r * sin(th);
+plot(x_circle, y_circle, 'Color', c_bs_range);
 hold on;
 
-gscatter(X, Y, idx);
+% Plotting the UAV Data
+p_uav_1 = scatter(uav_1(:,1), uav_1(:,2), 70, c_uav_1, '^', 'filled');
+hold on;
+p_uav_2 = scatter(uav_2(:,1), uav_2(:,2), 40, c_uav_2, '^', 'filled');
 hold on;
 p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
-    'LineWidth', 3, 'DisplayName','Centroids'); 
+    'LineWidth', 3, 'DisplayName', 'Centroids'); 
 hold on;
-p_uav_1 = plot(uav_1(:,1), uav_1(:,2), 'o', 'MarkerSize', 12, 'LineWidth', 3);
-hold on;
-p_uav_2 = plot(uav_2(:,1), uav_2(:,2), '+', 'MarkerSize', 10, 'LineWidth', 3);
-hold on;
-p_center = plot(0, 0, 'r*', 'MarkerSize', 15, 'LineWidth', 3);
+p_center = plot(x_bs, y_bs, 'ks', 'MarkerSize', 10, 'LineWidth', 3);
 hold off;
+axis equal;
+
+legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
+    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
+title('Communication Ranges');
+xlabel('X Distance');
+ylabel('Y Distance');
+
+
+%% Plotting the optimal UAV Placement Locations
+
+figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+
+% Finds the radius of the coverage of the base station and plots them.
+syms x
+capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
+eqn = capacity_bs == capacity_thresh;
+r = solve(eqn, x);
+r = abs(r(1,1));
+th = 0:pi/50:2*pi;
+x_circle = x_bs + r * cos(th);
+y_circle = y_bs + r * sin(th);
+plot(x_circle, y_circle, 'Color', c_bs_range);
+hold on;
+
+% Plotting the user data, the UAV data and the base Station Data
+scatter(X, Y, [], c_data, '.');
+hold on;
+p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
+    'LineWidth', 3, 'DisplayName', 'Centroids'); 
+hold on;
+p_uav_1 = scatter(uav_1(:,1), uav_1(:,2), 70, c_uav_1, '^', 'filled');
+hold on;
+p_uav_2 = scatter(uav_2(:,1), uav_2(:,2), 40, c_uav_2, '^', 'filled');
+hold on;
+p_center = plot(x_bs, y_bs, 'ks', 'MarkerSize', 10, 'LineWidth', 3);
+hold off;
+axis equal;
 
 legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
     'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
-
 
 %% Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.
 
