@@ -209,15 +209,14 @@ plot(x_circle, y_circle, 'Color', c_bs_range);
 hold on;
 
 % Plotting the user data, the UAV data and the base Station Data
-scatter(X, Y, [], c_data, '.');
+users = scatter(X, Y, [], c_data, '.');
 hold on;
 p_center = plot(x_bs, y_bs, 'ks', 'MarkerSize', 10, 'LineWidth', 3);
 hold off;
 axis equal;
 
-legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
-    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
-title('Optimal UAV Placement');
+legend([p_center, users], 'Base Station', 'Users');
+title('Population Density');
 xlabel('X Distance');
 ylabel('Y Distance');
 
@@ -240,7 +239,7 @@ plot(x_circle, y_circle, 'Color', c_bs_range);
 hold on;
 
 % Plotting the user data, the UAV data and the base Station Data
-scatter(X, Y, [], c_data, '.');
+users = scatter(X, Y, [], c_data, '.');
 hold on;
 p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
     'LineWidth', 3, 'DisplayName', 'Centroids'); 
@@ -253,8 +252,8 @@ p_center = plot(x_bs, y_bs, 'ks', 'MarkerSize', 10, 'LineWidth', 3);
 hold off;
 axis equal;
 
-legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
-    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
+legend([p_centroid, p_uav_1, p_uav_2, p_center, users], 'Centroids', ... 
+    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station', 'Users');
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
