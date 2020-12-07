@@ -191,6 +191,36 @@ title('Communication Ranges');
 xlabel('X Distance');
 ylabel('Y Distance');
 
+%% Plotting the Population Density
+
+figure('Name', 'Population Density', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+
+% Finds the radius of the coverage of the base station and plots them.
+syms x
+capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
+eqn = capacity_bs == capacity_thresh;
+r = solve(eqn, x);
+r = abs(r(1,1));
+th = 0:pi/50:2*pi;
+x_circle = x_bs + r * cos(th);
+y_circle = y_bs + r * sin(th);
+plot(x_circle, y_circle, 'Color', c_bs_range);
+hold on;
+
+% Plotting the user data, the UAV data and the base Station Data
+scatter(X, Y, [], c_data, '.');
+hold on;
+p_center = plot(x_bs, y_bs, 'ks', 'MarkerSize', 10, 'LineWidth', 3);
+hold off;
+axis equal;
+
+legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
+    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
+title('Optimal UAV Placement');
+xlabel('X Distance');
+ylabel('Y Distance');
+
 
 %% Plotting the optimal UAV Placement Locations
 
@@ -276,8 +306,3 @@ fprintf('Amount of Energy Saved: %f \n', ...
 fprintf('Percentage of Energy Saved: %f \n', ...
     sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)) / ...
     (no_of_users * power_threshold) * 100)
-
-
-
-
-
