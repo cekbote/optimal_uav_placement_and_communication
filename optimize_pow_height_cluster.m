@@ -2,7 +2,7 @@
 % Served with the given thresholds. 
 
 function [pow, height, rad, users_served, total_users] = optimize_pow_height_cluster(k_means_cluster, ... 
-    centroid, p_thresh, h_thresh, alpha, channel_cap_thresh, bw_uav)
+    centroid, p_thresh, h_thresh, alpha, channel_cap_thresh, bw_uav, var_n)
     
     % Input:
     % k_means_cluster: Contains the x and y cooordinates of all points in
@@ -15,6 +15,7 @@ function [pow, height, rad, users_served, total_users] = optimize_pow_height_clu
     % channel_cap_thresh: Minimum channel capacity required for proper
     % communication.
     % bw_uav: Bandwidth of the UAV communication.
+    % var_n: Noise Variance
     
     % Output:
     % pow: Power required by the UAV to communicate.
@@ -65,7 +66,7 @@ function [pow, height, rad, users_served, total_users] = optimize_pow_height_clu
     total_users = K;
     
     for i=K:-1:1
-        cons4 = bw_uav * log(1+x(1)/(dist(i,1) + x(2)^2))>=channel_cap_thresh;
+        cons4 = bw_uav * log(1+x(1)/((dist(i,1) + x(2)^2)*var_n))>=channel_cap_thresh;
         prob.Constraints.cons4 = cons4;
         x0.x = [p_thresh, 2*h_thresh];
         sol = solve(prob, x0);

@@ -2,7 +2,7 @@
 % travel to and fro
 
 function [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, ...
-    bw_bs, bw_uav, h_uav, h_bs, h_relay, capacity_thresh)
+    bw_bs, bw_uav, h_uav, h_bs, h_relay, capacity_thresh, var_n)
 
     % x_bs: x coordinate of base station
     % y_bs: y coordinate of base station
@@ -14,6 +14,7 @@ function [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, ...
     % bw_uav: Bandwidth of the UAV
     % h_uav: Height of the uav;
     % capacity_thresh: Threshold of the capacity required to transmit.
+    % var_n: Noise Variance.
 
     % Converting from a 2D plane to a single line
     d = abs(sqrt((x_c - x_bs)^2 + (y_c -  y_bs)^2));
@@ -21,8 +22,8 @@ function [points] = optimal_points(x_bs, y_bs, x_c, y_c, P_bs, P_uav, ...
 
     % Defining the equations
     syms x
-    capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_relay-h_bs)^2));
-    capacity_uav = bw_uav*log(1 + P_uav/((x-d)^2 + (h_uav-h_relay)^2));
+    capacity_bs = bw_bs*log(1 + P_bs/((x^2 + (h_relay-h_bs)^2) * var_n));
+    capacity_uav = bw_uav*log(1 + P_uav/(((x-d)^2 + (h_uav-h_relay)^2) * var_n));
     
     % Solving the equations. vpasolve is a numerical solver.
     intersection_bs_thresh = vpasolve(capacity_bs == capacity_thresh, x, ...

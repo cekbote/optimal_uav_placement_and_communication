@@ -104,12 +104,14 @@ height_threshold = 0.5;
 bw_uav  = 5;
 alpha = 0.5;
 chan_capacity_thresh = 1;
+var_n = 1.5;
 
 for i=1:num_of_centroids
     [optimal_data(i,1), optimal_data(i,2), optimal_data(i,3), ...
         optimal_data(i,4), optimal_data(i,5)] = ...
         optimize_pow_height_cluster(k_means_clusters{i}, centroids(i,:), ...
-        power_threshold, height_threshold, alpha, chan_capacity_thresh, bw_uav);
+        power_threshold, height_threshold, alpha, chan_capacity_thresh, bw_uav, ...
+        var_n);
 end
 
 %% Getting the optimal UAV locations for the UAV Relays
@@ -132,7 +134,7 @@ capacity_thresh = 1;
 for i=1:num_of_centroids
     points = optimal_points(x_bs, y_bs, centroids(i,1), centroids(i,2), ...
         P_bs, P_uav, bw_bs, bw_uav, optimal_data(i,2), h_bs, h_relay, ...
-        capacity_thresh);
+        capacity_thresh, var_n);
     uav_1 = [uav_1; points(1, :)];
     uav_2 = [uav_2; points(2, :)];
 end
@@ -198,7 +200,7 @@ figure('Name', 'Population Density', 'units','normalized','outerposition', ...
 
 % Finds the radius of the coverage of the base station and plots them.
 syms x
-capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
+capacity_bs = bw_bs*log(1 + P_bs/((x^2 + (h_bs)^2)*N));
 eqn = capacity_bs == capacity_thresh;
 r = solve(eqn, x);
 r = abs(r(1,1));
@@ -228,7 +230,7 @@ figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ..
 
 % Finds the radius of the coverage of the base station and plots them.
 syms x
-capacity_bs = bw_bs*log(1 + P_bs/(x^2 + (h_bs)^2));
+capacity_bs = bw_bs*log(1 + P_bs/((x^2 + (h_bs)^2)*N));
 eqn = capacity_bs == capacity_thresh;
 r = solve(eqn, x);
 r = abs(r(1,1));
@@ -269,8 +271,7 @@ for i=1:num_of_centroids
     total_random_channel_cap  = total_random_channel_cap + sum(bw_uav * log(1 + ... 
         P_uav./(dist + optimal_data(i,2)^2)));
     total_random_users_served = total_random_users_served + sum(bw_uav * log(1 + ...
-        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh);
-    
+        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh); 
 end
 
 % Computing the Total Channel Capacity.
@@ -281,8 +282,7 @@ for i=1:num_of_centroids
     total_channel_cap_opt  = total_channel_cap_opt + sum(bw_uav * log(1 + ... 
         optimal_data(i,1)./(dist + optimal_data(i,2)^2)));
     total_optimal_users_served = total_optimal_users_served + sum(bw_uav * log(1 + ...
-        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh);
-    
+        P_uav./(dist + optimal_data(i,2)^2))>chan_capacity_thresh);    
 end
 
 fprintf('Random Placement\n');
