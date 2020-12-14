@@ -10,6 +10,9 @@ close all;
 %% Functions Created: optimal_points
 % <include>optimal_points.m</include>
 
+%% Functions Created: optimal_points
+% <include>optimize_pow_height_cluster.m</include>
+
 %% Generating the data from each of the 2D Gaussian Distributions.
 
 % Parameters that can be changed according to the experiments.
