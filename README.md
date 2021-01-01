@@ -17,4 +17,7 @@ This repo contains the code for the project Optimal UAV Placement and Communicat
 contains the graphs as well as values for the experiments run. 
 
 ## Graph Neural Neworks
-- [Lecture 8 Graph Neural Networks (Stanford)](https://www.youtube.com/watch?v=LdK9HzBAR8c&list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-&index=8)
+- [Graph Neural Networks (Stanford Playlist)](https://www.youtube.com/playlist?list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-)
+  - [Lecture 8 Graph Neural Networks (Stanford)](https://www.youtube.com/watch?v=LdK9HzBAR8c&list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-&index=8)
+  - [Lecture 9 Graph Neural Networks (Stanford): PyTorch Implementation](https://www.youtube.com/watch?v=X_fmiIy_YyI&list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-&index=9)
+
