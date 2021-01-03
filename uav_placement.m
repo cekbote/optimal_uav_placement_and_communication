@@ -97,6 +97,7 @@ title('K Means Centroids');
 xlabel('X Distance');
 ylabel('Y Distance');
 
+
 %% Getting the optimal UAV power, height, coverage area, and the users served per Cluster
 
 % The five columns are optimal power, optimal height, radius of the users
@@ -156,12 +157,12 @@ figure('Name', 'Communication Ranges', 'units','normalized','outerposition', ...
 syms d_uav;
 capacity_uav = bw_uav*log(1 + P_uav/((d_uav^2 + (height_threshold)^2)*var_n));
 eqn = capacity_uav == capacity_thresh;
-r = solve(eqn, d_uav);
-r = abs(r(1,1));
+r_uav = solve(eqn, d_uav);
+r_uav = abs(r_uav(1,1));
 th = 0:pi/50:2*pi;
 for i=1:num_of_centroids
-    x_circle_uav = centroids(i, 1) + r * cos(th);
-    y_circle_uav = centroids(i, 2) + r * sin(th);
+    x_circle_uav = centroids(i, 1) + r_uav * cos(th);
+    y_circle_uav = centroids(i, 2) + r_uav * sin(th);
     plot(x_circle_uav, y_circle_uav, 'Color', c_bs_range);
     hold on;
 end
@@ -170,13 +171,19 @@ end
 syms x
 capacity_bs = bw_bs*log(1 + P_bs/((x^2 + (h_bs)^2)*var_n));
 eqn = capacity_bs == capacity_thresh;
-r = solve(eqn, x);
-r = abs(r(1,1));
+r_bs = solve(eqn, x);
+r_bs = abs(r_bs(1,1));
 th = 0:pi/50:2*pi;
-x_circle = x_bs + r * cos(th);
-y_circle = y_bs + r * sin(th);
+x_circle = x_bs + r_bs * cos(th);
+y_circle = y_bs + r_bs * sin(th);
 plot(x_circle, y_circle, 'Color', c_bs_range);
 hold on;
+
+% Getting the labels for the UAV
+numbered_labelling_uav = (2:41)';
+numbered_labelling_uav = num2str(numbered_labelling_uav);
+numbered_labelling_bs = '1';
+dx = 0.8; dy = 0.8; % Displacement so the text does not overlay the data points
 
 % Plotting the UAV Data
 p_uav_1 = scatter(uav_1(:,1), uav_1(:,2), 70, c_uav_1, '^', 'filled');
@@ -195,6 +202,8 @@ legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ...
 title('Communication Ranges');
 xlabel('X Distance');
 ylabel('Y Distance');
+text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
+text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
 
 %% Plotting the Population Density
 
@@ -202,14 +211,9 @@ figure('Name', 'Population Density', 'units','normalized','outerposition', ...
     [0 0 1 1]);
 
 % Finds the radius of the coverage of the base station and plots them.
-syms x
-capacity_bs = bw_bs*log(1 + P_bs/((x^2 + (h_bs)^2)*var_n));
-eqn = capacity_bs == capacity_thresh;
-r = solve(eqn, x);
-r = abs(r(1,1));
 th = 0:pi/50:2*pi;
-x_circle = x_bs + r * cos(th);
-y_circle = y_bs + r * sin(th);
+x_circle = x_bs + r_bs * cos(th);
+y_circle = y_bs + r_bs * sin(th);
 plot(x_circle, y_circle, 'Color', c_bs_range);
 hold on;
 
@@ -232,14 +236,9 @@ figure('Name', 'Optimal UAV Placement', 'units','normalized','outerposition', ..
     [0 0 1 1]);
 
 % Finds the radius of the coverage of the base station and plots them.
-syms x
-capacity_bs = bw_bs*log(1 + P_bs/((x^2 + (h_bs)^2)*var_n));
-eqn = capacity_bs == capacity_thresh;
-r = solve(eqn, x);
-r = abs(r(1,1));
 th = 0:pi/50:2*pi;
-x_circle = x_bs + r * cos(th);
-y_circle = y_bs + r * sin(th);
+x_circle = x_bs + r_bs * cos(th);
+y_circle = y_bs + r_bs * sin(th);
 plot(x_circle, y_circle, 'Color', c_bs_range);
 hold on;
 
@@ -262,6 +261,8 @@ legend([p_centroid, p_uav_1, p_uav_2, p_center, users], 'Centroids', ...
 title('Optimal UAV Placement');
 xlabel('X Distance');
 ylabel('Y Distance');
+text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
+text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
 
 %% Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.
 
@@ -308,3 +309,67 @@ fprintf('Amount of Energy Saved: %f \n', ...
 fprintf('Percentage of Energy Saved: %f \n', ...
     sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)) / ...
     (no_of_users * power_threshold) * 100)
+
+%% Using Graph Theory to get the Shortest Distance between Nodes
+
+
+% Assigning different weights to wireless communication and UAV travel
+w_com = 1; % Energy required for communication
+w_mot = 5; % Energy required for motion
+
+% Generating the Graph (Adjacency matrix)
+
+G = zeros(num_of_centroids + 1, num_of_centroids + 1);
+bs_and_cent = [x_bs, y_bs; centroids]; 
+
+for i=1:41
+    for j=1:41
+        
+        if (i==j)
+            G(i, j) = 0;
+            continue;
+        end
+        
+        if (i==1 || j==1)
+            r1 = r_bs;
+            r2 = r_uav;
+        else
+            r1 = r_uav;
+            r2 = r_uav;
+        end
+        
+        dist = sqrt((bs_and_cent(i,1) - bs_and_cent(j,1))^2 + ...
+            (bs_and_cent(i,2) - bs_and_cent(j,2))^2);
+        
+        if (dist >= r1 + r2)
+            G(i, j) = (dist - r1 - r2) * w_mot + (r1 + r2) * w_com;
+        else
+            G(i, j) = dist * w_com;
+        end
+                
+    end
+end
+
+% Calculating the cost as well as the routes for the Graph
+cost_and_routes = zeros(40, 42);
+
+for i=1:40
+    [cost, routes] = dijkstra(G, 1, i+1);
+    
+        
+    if (size(routes,2)>2)
+        fprintf('Route 1 to %i: ', i+1);
+    end
+    
+    for j=1:size(routes, 2)
+        if (size(routes,2)>2)
+            fprintf('%i ', routes(1, j));
+        end
+        cost_and_routes(i, j) = routes(1, j);
+        cost_and_routes(i, 42) = cost;
+    end
+    
+    if (size(routes,2)>2)
+        fprintf('\n');
+    end          
+end
