@@ -350,13 +350,24 @@ for i=1:41
     end
 end
 
-% Calculating the cost as well as the routes for the Graph
+% Calculating the cost as well as the routes for the Graph and get the 
+% updated optimal UAV locations.
 cost_and_routes = zeros(40, 42);
+
+uav_1_updated = [];
+uav_2_updated = [];
 
 for i=1:40
     [cost, routes] = dijkstra(G, 1, i+1);
     
-        
+    if (size(routes, 2)==2)
+        points = optimal_points(x_bs, y_bs, centroids(i,1), centroids(i,2), ...
+            P_bs, P_uav, bw_bs, bw_uav, optimal_data(i,2), h_bs, h_relay, ...
+            capacity_thresh, var_n);
+        uav_1_updated = [uav_1_updated; points(1, :)];
+        uav_2_updated = [uav_2_updated; points(2, :)];
+    end
+    
     if (size(routes,2)>2)
         fprintf('Route 1 to %i: ', i+1);
     end
@@ -364,6 +375,25 @@ for i=1:40
     for j=1:size(routes, 2)
         if (size(routes,2)>2)
             fprintf('%i ', routes(1, j));
+            if (j<(size(routes, 2)-1))
+                % We substract 1 as the first UAV starts from 2
+                uav_index_1 = routes(1, j)-1; 
+                uav_index_2 = routes(1, j+1)-1; 
+                points = optimal_points(centroids(uav_index_1, 1), ...
+                    centroids(uav_index_1, 2), centroids(uav_index_2, 1), ...
+                    centroids(uav_index_2, 2), P_uav, P_uav, bw_uav, ...
+                    bw_uav, optimal_data(j, 2), optimal_data(j+1, 2), h_relay, ...
+                    capacity_thresh, var_n);
+                uav_1_updated = [uav_1_updated; points(1, :)];
+                uav_2_updated = [uav_2_updated; points(2, :)];
+            elseif (j==(size(routes, 2)-1))
+                uav_index_1 = routes(1, j) - 1;
+                points = optimal_points(x_bs, y_bs, centroids(uav_index_1,1), ...
+                    centroids(uav_index_1,2), P_bs, P_uav, bw_bs, bw_uav, ...
+                    optimal_data(j,2), h_bs, h_relay, capacity_thresh, var_n);
+                uav_1_updated = [uav_1_updated; points(1, :)];
+                uav_2_updated = [uav_2_updated; points(2, :)];
+            end
         end
         cost_and_routes(i, j) = routes(1, j);
         cost_and_routes(i, 42) = cost;
@@ -373,3 +403,86 @@ for i=1:40
         fprintf('\n');
     end          
 end
+%% Plotting the Updated Ranges of all the UAVs
+
+figure('Name', 'Updated Communication Ranges', 'units','normalized','outerposition', ...
+    [0 0 1 1]);
+
+% Finds the radius of coverage of the UAVs and plots them
+th = 0:pi/50:2*pi;
+for i=1:num_of_centroids
+    x_circle_uav = centroids(i, 1) + r_uav * cos(th);
+    y_circle_uav = centroids(i, 2) + r_uav * sin(th);
+    plot(x_circle_uav, y_circle_uav, 'Color', c_bs_range);
+    hold on;
+end
+
+% Finds the radius of the coverage of the base station and plots them.
+th = 0:pi/50:2*pi;
+x_circle = x_bs + r_bs * cos(th);
+y_circle = y_bs + r_bs * sin(th);
+plot(x_circle, y_circle, 'Color', c_bs_range);
+hold on;
+
+% Getting the labels for the UAV
+numbered_labelling_uav = (2:41)';
+numbered_labelling_uav = num2str(numbered_labelling_uav);
+numbered_labelling_bs = '1';
+dx = 0.8; dy = 0.8; % Displacement so the text does not overlay the data points
+
+% Plotting the user data, the UAV data and the base Station Data
+users = scatter(X, Y, [], c_data, '.');
+hold on;
+p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
+    'LineWidth', 3, 'DisplayName', 'Centroids'); 
+hold on;
+p_uav_1 = scatter(uav_1_updated(:,1), uav_1_updated(:,2), 70, c_uav_1, '^', 'filled');
+hold on;
+p_uav_2 = scatter(uav_2_updated(:,1), uav_2_updated(:,2), 40, c_uav_2, '^', 'filled');
+hold on;
+p_center = plot(x_bs, y_bs, 'ks', 'MarkerSize', 10, 'LineWidth', 3);
+hold off;
+axis equal;
+
+legend([p_centroid, p_uav_1, p_uav_2, p_center], 'Centroids', ... 
+    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station');
+title('Communication Ranges');
+xlabel('X Distance');
+ylabel('Y Distance');
+text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
+text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
+
+
+%% Plotting the updated optimal UAV Placement Locations
+
+figure('Name', 'Updated Optimal UAV Placement', 'units','normalized',...
+    'outerposition', [0 0 1 1]);
+
+% Finds the radius of the coverage of the base station and plots them.
+th = 0:pi/50:2*pi;
+x_circle = x_bs + r_bs * cos(th);
+y_circle = y_bs + r_bs * sin(th);
+plot(x_circle, y_circle, 'Color', c_bs_range);
+hold on;
+
+% Plotting the user data, the UAV data and the base Station Data
+users = scatter(X, Y, [], c_data, '.');
+hold on;
+p_centroid = plot(centroids(:,1), centroids(:,2), 'kx', 'MarkerSize', 10, ...
+    'LineWidth', 3, 'DisplayName', 'Centroids'); 
+hold on;
+p_uav_1 = scatter(uav_1_updated(:,1), uav_1_updated(:,2), 70, c_uav_1, '^', 'filled');
+hold on;
+p_uav_2 = scatter(uav_2_updated(:,1), uav_2_updated(:,2), 40, c_uav_2, '^', 'filled');
+hold on;
+p_center = plot(x_bs, y_bs, 'ks', 'MarkerSize', 10, 'LineWidth', 3);
+hold off;
+axis equal;
+
+legend([p_centroid, p_uav_1, p_uav_2, p_center, users], 'Centroids', ... 
+    'UAV Intersection 1', 'UAV Intersection 2', 'Base Station', 'Users');
+title('Updated Optimal UAV Placement');
+xlabel('X Distance');
+ylabel('Y Distance');
+text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
+text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
