@@ -19,7 +19,7 @@ contains the graphs as well as values for the experiments run.
 ## Graph Neural Neworks (Explained and Implementation)
 - [Graph Neural Networks (Stanford Playlist)](https://www.youtube.com/playlist?list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-)
   - [Lecture 8 Graph Neural Networks (Stanford)](https://www.youtube.com/watch?v=LdK9HzBAR8c&list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-&index=8)
-    - [SDSDS]()
+    - [Notes](http://web.stanford.edu/class/cs224w/slides/08-GNN.pdf)
   - [Lecture 9 Graph Neural Networks (Stanford): PyTorch Implementation](https://www.youtube.com/watch?v=X_fmiIy_YyI&list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-&index=9)
 
 ## Graph Neural Networks Papers
