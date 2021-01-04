@@ -16,8 +16,13 @@ This repo contains the code for the project Optimal UAV Placement and Communicat
 - The [Google Sheet](https://docs.google.com/spreadsheets/d/1yOZQIDsm5ox8qCE6SoBkB_squkEjh6qKpi4tMPmvztI/edit?usp=sharing) 
 contains the graphs as well as values for the experiments run. 
 
-## Graph Neural Neworks
+## Graph Neural Neworks (Explained and Implementation)
 - [Graph Neural Networks (Stanford Playlist)](https://www.youtube.com/playlist?list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-)
   - [Lecture 8 Graph Neural Networks (Stanford)](https://www.youtube.com/watch?v=LdK9HzBAR8c&list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-&index=8)
   - [Lecture 9 Graph Neural Networks (Stanford): PyTorch Implementation](https://www.youtube.com/watch?v=X_fmiIy_YyI&list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-&index=9)
 
+## Graph Neural Networks Papers
+- [A Graph Neural Network Approach for Scalable Wireless Power Control](https://arxiv.org/pdf/1907.08487.pdf)
+- [Graph Signal Processing: Overview, Challenges and Applications](https://arxiv.org/pdf/1712.00468.pdf)
+- [Graph Embedding based Wireless Link Scheduling with Few Training Samples](https://arxiv.org/pdf/1906.02871.pdf)
+- [Representation Learning on Graphs: Methods and Applications](https://www-cs.stanford.edu/people/jure/pubs/graphrepresentation-ieee17.pdf)
