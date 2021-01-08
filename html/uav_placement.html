@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>uav_placement</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-03"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
+      --><title>uav_placement</title><meta name="generator" content="MATLAB 9.9"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2021-01-08"><meta name="DC.source" content="uav_placement.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -67,7 +67,7 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created: optimal_points</a></li><li><a href="#4">Functions Created: optimal_points</a></li><li><a href="#5">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#6">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#7">Getting the K-Means Centroids and Clusters</a></li><li><a href="#8">Generating Random Points for Placing the the Random UAVs</a></li><li><a href="#9">Plotting the K-Means Centroids</a></li><li><a href="#10">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</a></li><li><a href="#11">Getting the optimal UAV locations for the UAV Relays</a></li><li><a href="#12">Plotting the Ranges of all the UAVs</a></li><li><a href="#13">Plotting the Population Density</a></li><li><a href="#14">Plotting the optimal UAV Placement Locations</a></li><li><a href="#15">Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.</a></li><li><a href="#16">Using Graph Theory to get the Shortest Distance between Nodes</a></li><li><a href="#17">Plotting the Updated Ranges of all the UAVs</a></li><li><a href="#18">Plotting the updated optimal UAV Placement Locations</a></li></ul></div><h2 id="1">Creating a new environment</h2><pre class="codeinput">clc;
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Creating a new environment</a></li><li><a href="#2">Functions Created: generate_data</a></li><li><a href="#3">Functions Created: optimal_points</a></li><li><a href="#4">Functions Created: optimal_points</a></li><li><a href="#5">Generating the data from each of the 2D Gaussian Distributions.</a></li><li><a href="#6">Plotting each of the Gaussian Dsitributions.</a></li><li><a href="#7">Getting the K-Means Centroids and Clusters</a></li><li><a href="#8">Generating Random Points for Placing the the Random UAVs</a></li><li><a href="#9">Plotting the K-Means Centroids</a></li><li><a href="#10">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</a></li><li><a href="#11">Getting the optimal UAV locations for the UAV Relays</a></li><li><a href="#12">Plotting the Ranges of all the UAVs</a></li><li><a href="#13">Plotting the Population Density</a></li><li><a href="#14">Plotting the optimal UAV Placement Locations</a></li><li><a href="#15">Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.</a></li><li><a href="#16">Using Graph Theory to get the Shortest Distance between Nodes</a></li><li><a href="#17">Plotting the Updated Ranges of all the UAVs</a></li><li><a href="#18">Plotting the updated optimal UAV Placement Locations</a></li><li><a href="#19">Calculating the Performance Metrics for the Dijkstra Algorithm</a></li></ul></div><h2 id="1">Creating a new environment</h2><pre class="codeinput">clc;
 clear <span class="string">all</span>;
 close <span class="string">all</span>;
 </pre><h2 id="2">Functions Created: generate_data</h2><pre class="language-matlab">
@@ -313,7 +313,7 @@ legend([p_centroids_random], <span class="string">'Random Centroids'</span>);
 title(<span class="string">'Random Centroids'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_02.png" alt=""> <h2 id="9">Plotting the K-Means Centroids</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'K Means Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_02.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_03.png" alt=""> <h2 id="9">Plotting the K-Means Centroids</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'K Means Centroids'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
     [0 0 1 1]);
 
 gscatter(X, Y, idx);
@@ -326,7 +326,7 @@ legend([p_centroids], <span class="string">'Centroids'</span>);
 title(<span class="string">'K Means Centroids'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_03.png" alt=""> <h2 id="10">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</h2><pre class="codeinput"><span class="comment">% The five columns are optimal power, optimal height, radius of the users</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_04.png" alt=""> <h2 id="10">Getting the optimal UAV power, height, coverage area, and the users served per Cluster</h2><pre class="codeinput"><span class="comment">% The five columns are optimal power, optimal height, radius of the users</span>
 <span class="comment">% served, number of users served</span>
 optimal_data = zeros(num_of_centroids, 5);
 power_threshold = 10;
@@ -364,42 +364,6 @@ and constraints are satisfied to within the value of the constraint tolerance.
 
 Solving problem using fmincon.
 
-Converged to an infeasible point.
-
-fmincon stopped because the size of the current step is less than
-the value of the step size tolerance but constraints are not
-satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Converged to an infeasible point.
-
-fmincon stopped because the size of the current step is less than
-the value of the step size tolerance but constraints are not
-satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
 Local minimum found that satisfies the constraints.
 
 Optimization completed because the objective function is non-decreasing in 
@@ -508,20 +472,11 @@ satisfied to within the value of the constraint tolerance.
 
 Solving problem using fmincon.
 
-Local minimum found that satisfies the constraints.
+Converged to an infeasible point.
 
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
 
 
 Solving problem using fmincon.
@@ -535,11 +490,19 @@ and constraints are satisfied to within the value of the constraint tolerance.
 
 Solving problem using fmincon.
 
-Local minimum found that satisfies the constraints.
+Converged to an infeasible point.
 
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
+fmincon stopped because it is unable to find a point locally that satisfies
+the constraints within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Converged to an infeasible point.
+
+fmincon stopped because the size of the current step is less than
+the value of the step size tolerance but constraints are not
+satisfied to within the value of the constraint tolerance.
 
 
 Solving problem using fmincon.
@@ -706,33 +669,6 @@ satisfied to within the value of the constraint tolerance.
 
 Solving problem using fmincon.
 
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
-Local minimum found that satisfies the constraints.
-
-Optimization completed because the objective function is non-decreasing in 
-feasible directions, to within the value of the optimality tolerance,
-and constraints are satisfied to within the value of the constraint tolerance.
-
-
-Solving problem using fmincon.
-
 Converged to an infeasible point.
 
 fmincon stopped because the size of the current step is less than
@@ -751,11 +687,74 @@ and constraints are satisfied to within the value of the constraint tolerance.
 
 Solving problem using fmincon.
 
-Converged to an infeasible point.
+Local minimum found that satisfies the constraints.
 
-fmincon stopped because the size of the current step is less than
-the value of the step size tolerance but constraints are not
-satisfied to within the value of the constraint tolerance.
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
+
+
+Solving problem using fmincon.
+
+Local minimum found that satisfies the constraints.
+
+Optimization completed because the objective function is non-decreasing in 
+feasible directions, to within the value of the optimality tolerance,
+and constraints are satisfied to within the value of the constraint tolerance.
 
 
 Solving problem using fmincon.
@@ -847,7 +846,7 @@ xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
 text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
 text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
-</pre><img vspace="5" hspace="5" src="uav_placement_04.png" alt=""> <h2 id="13">Plotting the Population Density</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Population Density'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_05.png" alt=""> <h2 id="13">Plotting the Population Density</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Population Density'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
     [0 0 1 1]);
 
 <span class="comment">% Finds the radius of the coverage of the base station and plots them.</span>
@@ -868,7 +867,7 @@ legend([p_center, users], <span class="string">'Base Station'</span>, <span clas
 title(<span class="string">'Population Density'</span>);
 xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
-</pre><img vspace="5" hspace="5" src="uav_placement_05.png" alt=""> <h2 id="14">Plotting the optimal UAV Placement Locations</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Optimal UAV Placement'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_06.png" alt=""> <h2 id="14">Plotting the optimal UAV Placement Locations</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Optimal UAV Placement'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
     [0 0 1 1]);
 
 <span class="comment">% Finds the radius of the coverage of the base station and plots them.</span>
@@ -899,7 +898,7 @@ xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
 text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
 text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
-</pre><img vspace="5" hspace="5" src="uav_placement_06.png" alt=""> <h2 id="15">Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.</h2><pre class="codeinput"><span class="comment">% Computing the Random Placement Capacity</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_07.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_08.png" alt=""> <h2 id="15">Comparing the Utility of K-Means vs Random Placement by checking Total Channel Capacity and Number of Users served.</h2><pre class="codeinput"><span class="comment">% Computing the Random Placement Capacity</span>
 total_random_channel_cap = 0;
 total_random_users_served = 0;
 <span class="keyword">for</span> i=1:num_of_centroids
@@ -943,19 +942,19 @@ fprintf(<span class="string">'Percentage of Energy Saved: %f \n'</span>, <span c
     sum((power_threshold - optimal_data(:, 1)) .* optimal_data(:, 4)) / <span class="keyword">...</span>
     (no_of_users * power_threshold) * 100)
 </pre><pre class="codeoutput">Random Placement
-Total Channel Capacity: 32566.507169 
-Channel Capacity Per User: 8.141627 
-Users Served: 5653.000000 
+Total Channel Capacity: 33953.624262 
+Channel Capacity Per User: 8.488406 
+Users Served: 5829.000000 
 Percentage of Users Served: 100.000000 
 
 Optimal Placement
-Total Channel Capacity: 39369.106888 
-Channel Capacity Per User: 9.842277 
+Total Channel Capacity: 39441.820256 
+Channel Capacity Per User: 9.860455 
 Users Served: 3993.000000 
 Percentage of Users Served: 99.825000 
 
-Amount of Energy Saved: 18400.136604 
-Percentage of Energy Saved: 46.000342 
+Amount of Energy Saved: 18087.842495 
+Percentage of Energy Saved: 45.219606 
 </pre><h2 id="16">Using Graph Theory to get the Shortest Distance between Nodes</h2><pre class="codeinput"><span class="comment">% Assigning different weights to wireless communication and UAV travel</span>
 w_com = 1; <span class="comment">% Energy required for communication</span>
 w_mot = 5; <span class="comment">% Energy required for motion</span>
@@ -999,6 +998,8 @@ cost_and_routes = zeros(40, 42);
 
 uav_1_updated = [];
 uav_2_updated = [];
+
+fprintf(<span class="string">'\n'</span>);
 
 <span class="keyword">for</span> i=1:40
     [cost, routes] = dijkstra(G, 1, i+1);
@@ -1046,16 +1047,17 @@ uav_2_updated = [];
         fprintf(<span class="string">'\n'</span>);
     <span class="keyword">end</span>
 <span class="keyword">end</span>
-</pre><pre class="codeoutput">Route 1 to 5: 5 17 1 
-Route 1 to 10: 10 39 1 
-Route 1 to 12: 12 20 1 
-Route 1 to 19: 19 41 1 
-Route 1 to 21: 21 26 1 
-Route 1 to 24: 24 19 41 1 
-Route 1 to 32: 32 37 1 
-Route 1 to 33: 33 27 1 
-Route 1 to 38: 38 39 1 
-</pre><img vspace="5" hspace="5" src="uav_placement_07.png" alt=""> <h2 id="17">Plotting the Updated Ranges of all the UAVs</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Updated Communication Ranges'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
+</pre><pre class="codeoutput">
+Route 1 to 3: 3 21 1 
+Route 1 to 9: 9 41 1 
+Route 1 to 14: 14 25 1 
+Route 1 to 15: 15 13 1 
+Route 1 to 26: 26 11 1 
+Route 1 to 29: 29 20 1 
+Route 1 to 31: 31 38 1 
+Route 1 to 32: 32 36 1 
+Route 1 to 40: 40 6 1 
+</pre><h2 id="17">Plotting the Updated Ranges of all the UAVs</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Updated Communication Ranges'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>, <span class="keyword">...</span>
     [0 0 1 1]);
 
 <span class="comment">% Finds the radius of coverage of the UAVs and plots them</span>
@@ -1101,7 +1103,7 @@ xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
 text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
 text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
-</pre><img vspace="5" hspace="5" src="uav_placement_08.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_09.png" alt=""> <h2 id="18">Plotting the updated optimal UAV Placement Locations</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Updated Optimal UAV Placement'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
+</pre><img vspace="5" hspace="5" src="uav_placement_09.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_10.png" alt=""> <h2 id="18">Plotting the updated optimal UAV Placement Locations</h2><pre class="codeinput">figure(<span class="string">'Name'</span>, <span class="string">'Updated Optimal UAV Placement'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="keyword">...</span>
     <span class="string">'outerposition'</span>, [0 0 1 1]);
 
 <span class="comment">% Finds the radius of the coverage of the base station and plots them.</span>
@@ -1132,7 +1134,24 @@ xlabel(<span class="string">'X Distance'</span>);
 ylabel(<span class="string">'Y Distance'</span>);
 text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
 text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
-</pre><img vspace="5" hspace="5" src="uav_placement_10.png" alt=""> <img vspace="5" hspace="5" src="uav_placement_11.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="uav_placement_11.png" alt=""> <h2 id="19">Calculating the Performance Metrics for the Dijkstra Algorithm</h2><pre class="codeinput">dist_matrix_orig = (uav_1 - uav_2)' * (uav_1 - uav_2);
+dist_matrix_updated = (uav_1_updated - uav_2_updated)' * <span class="keyword">...</span>
+    (uav_1_updated - uav_2_updated);
+
+latency_reduced_per = (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2) - <span class="keyword">...</span>
+    dist_matrix_updated(1,1) - dist_matrix_updated(2, 2)) / <span class="keyword">...</span>
+    (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2)) * 100;
+
+additional_energy_saved = (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2) - <span class="keyword">...</span>
+    dist_matrix_updated(1,1) - dist_matrix_updated(2, 2)) * w_mot;
+
+fprintf(<span class="string">'\n'</span>);
+fprintf(<span class="string">'Percentage Latency Reduced: %f \n'</span>, latency_reduced_per);
+fprintf(<span class="string">'Additional Energy Saved: %f \n'</span>, additional_energy_saved);
+</pre><pre class="codeoutput">
+Percentage Latency Reduced: 98.454982 
+Additional Energy Saved: 1272.377566 
+</pre><p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2020b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %% Creating a new environment
 
@@ -1493,6 +1512,8 @@ cost_and_routes = zeros(40, 42);
 uav_1_updated = [];
 uav_2_updated = [];
 
+fprintf('\n');
+
 for i=1:40
     [cost, routes] = dijkstra(G, 1, i+1);
     
@@ -1622,5 +1643,22 @@ xlabel('X Distance');
 ylabel('Y Distance');
 text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
 text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
+
+%% Calculating the Performance Metrics for the Dijkstra Algorithm
+
+dist_matrix_orig = (uav_1 - uav_2)' * (uav_1 - uav_2);
+dist_matrix_updated = (uav_1_updated - uav_2_updated)' * ... 
+    (uav_1_updated - uav_2_updated);
+
+latency_reduced_per = (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2) - ...
+    dist_matrix_updated(1,1) - dist_matrix_updated(2, 2)) / ...
+    (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2)) * 100;
+
+additional_energy_saved = (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2) - ...
+    dist_matrix_updated(1,1) - dist_matrix_updated(2, 2)) * w_mot;
+
+fprintf('\n');
+fprintf('Percentage Latency Reduced: %f \n', latency_reduced_per);
+fprintf('Additional Energy Saved: %f \n', additional_energy_saved);
 ##### SOURCE END #####
 --></body></html>

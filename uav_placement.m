@@ -357,6 +357,8 @@ cost_and_routes = zeros(40, 42);
 uav_1_updated = [];
 uav_2_updated = [];
 
+fprintf('\n');
+
 for i=1:40
     [cost, routes] = dijkstra(G, 1, i+1);
     
@@ -486,3 +488,20 @@ xlabel('X Distance');
 ylabel('Y Distance');
 text(centroids(:,1) + dx, centroids(:,2) + dy, numbered_labelling_uav);
 text(x_bs + dx, y_bs + dy, numbered_labelling_bs);
+
+%% Calculating the Performance Metrics for the Dijkstra Algorithm
+
+dist_matrix_orig = (uav_1 - uav_2)' * (uav_1 - uav_2);
+dist_matrix_updated = (uav_1_updated - uav_2_updated)' * ... 
+    (uav_1_updated - uav_2_updated);
+
+latency_reduced_per = (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2) - ...
+    dist_matrix_updated(1,1) - dist_matrix_updated(2, 2)) / ...
+    (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2)) * 100;
+
+additional_energy_saved = (dist_matrix_orig(1, 1) + dist_matrix_orig(2, 2) - ...
+    dist_matrix_updated(1,1) - dist_matrix_updated(2, 2)) * w_mot;
+
+fprintf('\n');
+fprintf('Percentage Latency Reduced: %f \n', latency_reduced_per);
+fprintf('Additional Energy Saved: %f \n', additional_energy_saved);
