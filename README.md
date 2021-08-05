@@ -1,6 +1,6 @@
 # Optimal UAV Placement and Communication
 
-This repo contains the code for the project Optimal UAV Placement and Communication
+This repo contains the code for the project Optimal UAV Placement and Communication. MATLAB version used: `R2020b`.
 
 ## Research Papers (Literature Review)
 - [Resource Allocation and Basestation Placement in Downlink Cellular Networks Assisted by Multiple Wireless Powered UAVs](https://sci-hub.st/10.1109/tvt.2019.2960765)
