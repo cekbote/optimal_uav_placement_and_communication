@@ -16,7 +16,7 @@ The final version of the paper can be found [here](https://ieeexplore.ieee.org/a
 
 ## Results of the Experiments
 - The [Google Sheet](https://docs.google.com/spreadsheets/d/1yOZQIDsm5ox8qCE6SoBkB_squkEjh6qKpi4tMPmvztI/edit?usp=sharing) 
-contains the graphs as well as values for the experiments run. 
+contains the graphs as well as values for the experiments run. This sheet contains the results shown in the paper. Please take a look at the paper if you would like to observe the results.
 
 ## Graph Neural Neworks (Explained and Implementation)
 - [Graph Neural Networks (Stanford Playlist)](https://www.youtube.com/playlist?list=PL-Y8zK4dwCrQyASidb2mjj_itW2-YYx6-)
