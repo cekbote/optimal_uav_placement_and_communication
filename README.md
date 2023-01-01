@@ -29,3 +29,19 @@ contains the graphs as well as values for the experiments run. **This sheet cont
 - [Graph Signal Processing: Overview, Challenges and Applications](https://arxiv.org/pdf/1712.00468.pdf)
 - [Graph Embedding based Wireless Link Scheduling with Few Training Samples](https://arxiv.org/pdf/1906.02871.pdf)
 - [Representation Learning on Graphs: Methods and Applications](https://www-cs.stanford.edu/people/jure/pubs/graphrepresentation-ieee17.pdf)
+
+## Citing this work
+
+If you use ideas from the paper or use the code, we request that you cite this paper. 
+
+```
+@INPROCEEDINGS{9530098,  
+author={Prasad, Nelapati Lava and Ekbote, Chanakya Ajit and Ramkumar, Barathram},  
+booktitle={2021 National Conference on Communications (NCC)},   
+title={Optimal Deployment Strategy for Relay Based UAV Assisted Cooperative Communication for Emergency Applications},   
+year={2021},  
+volume={},  
+number={},  
+pages={1-6},  
+doi={10.1109/NCC52529.2021.9530098}}
+```
